@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <iterator>
+#include <map>
+#include <memory>
 
 namespace gdwg {
 
@@ -11,6 +13,7 @@ class Graph {
   public:
     class const_iterator {};
     // ---------------------- Constructors ----------------------
+    /*
     Graph<N, E>();
     Graph<N, E>(typename std::vector<N>::const_iterator, typename std::vector<N>::const_iterator);
     Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator, typename std::vector<std::tuple<N, N, E>>::const_iterator);
@@ -24,8 +27,10 @@ class Graph {
     Graph<N, E>& operator=(const Graph&&);
 
     // ---------------------- Methods ----------------------
+     */
     bool InsertNode(const N& val);
     bool InsertEdge(const N& src, const N& dst, const E& w);
+    /*
     bool DeleteNode(const N&);
     bool Replace(const N& oldData, const N& newData);
     void MergeReplace(const N& oldData, const N& newData);
@@ -51,8 +56,29 @@ class Graph {
     friend bool operator==(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
     friend bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
     friend std::ostream& operator<<(std::ostream&, const gdwg::Graph<N, E>&);
-
+    */
   private:
+  struct Edge;
+  struct Node;
+  std::map<std::string, std::shared_ptr<Node>> nodes_;
+
+  struct Node {
+    std::shared_ptr<N> val_;
+    std::vector<std::shared_ptr<Edge>> inGoing_;
+    std::vector<std::shared_ptr<Edge>> outGoing_;
+    explicit Node(std::shared_ptr<N>& val) : val_{val}{};
+  };
+
+  struct Edge {
+    std::weak_ptr<Node> src_;
+    std::weak_ptr<Node> dst_;
+    std::shared_ptr<int> weight_;
+    Edge(std::shared_ptr<Node> src, std::shared_ptr<Node> dst,std::shared_ptr<E> weight){
+      src_ = src;
+      dst_ = dst;
+      weight_ = weight;
+    };
+  };
 };
 
 

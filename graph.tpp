@@ -1,3 +1,5 @@
+#include "assignments/dg/graph.h"
+/*
 // ---------------------- Constructors ----------------------
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph()= default;
@@ -26,14 +28,27 @@ gdwg::Graph<N, E>& gdwg::Graph<N,E>::operator=(const Graph<N,E>&){}
 
 template<typename N, typename E>
 gdwg::Graph<N, E>& gdwg::Graph<N,E>::operator=(const Graph<N,E>&&){}
-
+*/
 // ---------------------- Methods ----------------------
 template<typename N, typename E>
-bool gdwg::Graph<N,E>::InsertNode(const N& val){}
+bool gdwg::Graph<N,E>::InsertNode(const N& val){
+  auto valCpy = std::make_shared<N>(val);
+  auto newN = Node(valCpy);
+  nodes_.insert(std::make_pair(*valCpy, std::make_shared<Node>(newN)));
+  return true;
+}
 
 template<typename N, typename E>
-bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){}
-
+bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){  auto srcNode = nodes_.at(src);
+  auto dstNode = nodes_.at(dst);
+  auto wCpy = std::make_shared<E>(w);
+  Edge ed = Edge{srcNode, dstNode, wCpy};
+  auto newEdge = std::make_shared<Edge>(ed);
+  srcNode->outGoing_.push_back(newEdge);
+  dstNode->inGoing_.push_back(newEdge);
+  return true;
+}
+/*
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::DeleteNode(const N&){}
 
@@ -101,3 +116,4 @@ template<typename N, typename E>
 bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&){}
 template<typename N, typename E>
 std::ostream& operator<<(std::ostream&, const gdwg::Graph<N, E>&){}
+*/
