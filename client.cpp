@@ -23,6 +23,10 @@ int main() {
 
   std::cout << g << '\n';
 
+  std::vector<int> a = g.GetWeights("hello", "are");
+  for(int i : a) {
+    std::cout << i << "\n";
+  }
   /*
   gdwg::Graph<std::string, int> g2{g};
 
