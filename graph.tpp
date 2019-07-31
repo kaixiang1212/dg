@@ -1,3 +1,4 @@
+#include <iostream>
 #include "assignments/dg/graph.h"
 /*
 // ---------------------- Constructors ----------------------
@@ -48,10 +49,14 @@ bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){  auto
   dstNode->inGoing_.push_back(newEdge);
   return true;
 }
-/*
-template<typename N, typename E>
-bool gdwg::Graph<N,E>::DeleteNode(const N&){}
 
+template<typename N, typename E>
+bool gdwg::Graph<N,E>::DeleteNode(const N& del){
+  auto nodeRmv = nodes_.at(del);
+  return true;
+}
+
+/*
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::Replace(const N& oldData, const N& newData){}
 
@@ -114,6 +119,4 @@ template<typename N, typename E>
 bool operator==(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&){}
 template<typename N, typename E>
 bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&){}
-template<typename N, typename E>
-std::ostream& operator<<(std::ostream&, const gdwg::Graph<N, E>&){}
-*/
+ */

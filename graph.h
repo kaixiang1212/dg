@@ -30,8 +30,8 @@ class Graph {
      */
     bool InsertNode(const N& val);
     bool InsertEdge(const N& src, const N& dst, const E& w);
-    /*
     bool DeleteNode(const N&);
+    /*
     bool Replace(const N& oldData, const N& newData);
     void MergeReplace(const N& oldData, const N& newData);
     void Clear();
@@ -55,30 +55,41 @@ class Graph {
     // ---------------------- Friends ----------------------
     friend bool operator==(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
     friend bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&);
-    friend std::ostream& operator<<(std::ostream&, const gdwg::Graph<N, E>&);
-    */
+     */
+    friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g){
+      for(auto it = g.nodes_.begin(); it != g.nodes_.end(); ++it){
+        auto curNode = it->second;
+        os << *curNode->val_ << " (\n";
+        for(auto& e : curNode->outGoing_) {
+          os << "  " << *e->dst_->val_ << " | " << *e->weight_ << "\n";
+        }
+        os << ")\n";
+      }
+      return os;
+    }
+
   private:
-  struct Edge;
-  struct Node;
-  std::map<std::string, std::shared_ptr<Node>> nodes_;
+    struct Edge;
+    struct Node;
+    std::map<std::string, std::shared_ptr<Node>> nodes_;
 
-  struct Node {
-    std::shared_ptr<N> val_;
-    std::vector<std::shared_ptr<Edge>> inGoing_;
-    std::vector<std::shared_ptr<Edge>> outGoing_;
-    explicit Node(std::shared_ptr<N>& val) : val_{val}{};
-  };
-
-  struct Edge {
-    std::weak_ptr<Node> src_;
-    std::weak_ptr<Node> dst_;
-    std::shared_ptr<int> weight_;
-    Edge(std::shared_ptr<Node> src, std::shared_ptr<Node> dst,std::shared_ptr<E> weight){
-      src_ = src;
-      dst_ = dst;
-      weight_ = weight;
+    struct Node {
+      std::shared_ptr<N> val_;
+      std::vector<std::shared_ptr<Edge>> inGoing_;
+      std::vector<std::shared_ptr<Edge>> outGoing_;
+      explicit Node(std::shared_ptr<N>& val) : val_{val}{};
     };
-  };
+
+    struct Edge {
+      std::shared_ptr<Node> src_;
+      std::shared_ptr<Node> dst_;
+      std::shared_ptr<int> weight_;
+      Edge(std::shared_ptr<Node> src, std::shared_ptr<Node> dst,std::shared_ptr<E> weight){
+        src_ = src;
+        dst_ = dst;
+        weight_ = weight;
+      };
+    };
 };
 
 

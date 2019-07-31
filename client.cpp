@@ -20,9 +20,9 @@ int main() {
   g.InsertEdge("how", "hello", 4);
 
   g.InsertEdge("are", "you?", 3);
-  /*
-  std::cout << g << '\n';
 
+  std::cout << g << '\n';
+  /*
   gdwg::Graph<std::string, int> g2{g};
 
   std::cout << g2 << "\n";
