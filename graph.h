@@ -13,16 +13,18 @@ class Graph {
   public:
     class const_iterator {};
     // ---------------------- Constructors ----------------------
-    /*
+
     Graph<N, E>();
     Graph<N, E>(typename std::vector<N>::const_iterator, typename std::vector<N>::const_iterator);
     Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator, typename std::vector<std::tuple<N, N, E>>::const_iterator);
     Graph<N, E>(std::initializer_list<N>);
     Graph<N, E>(const gdwg::Graph<N, E>&) noexcept ;
     Graph<N, E>(gdwg::Graph<N, E>&&) noexcept ;
+
     ~Graph<N, E>();
 
     // ---------------------- Operations ----------------------
+    /*
     Graph<N, E>& operator=(const Graph&);
     Graph<N, E>& operator=(const Graph&&);
 
@@ -73,7 +75,7 @@ class Graph {
   private:
     struct Edge;
     struct Node;
-    std::map<std::string, std::shared_ptr<Node>> nodes_;
+    std::map<N, std::shared_ptr<Node>> nodes_;
 
     struct Node {
       std::shared_ptr<N> val_;
@@ -85,7 +87,7 @@ class Graph {
     struct Edge {
       std::weak_ptr<Node> src_;
       std::weak_ptr<Node> dst_;
-      std::shared_ptr<int> weight_;
+      std::shared_ptr<E> weight_;
       Edge(std::shared_ptr<Node> src, std::shared_ptr<Node> dst,std::shared_ptr<E> weight){
         src_ = src;
         dst_ = dst;
