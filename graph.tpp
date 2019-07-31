@@ -105,10 +105,16 @@ bool gdwg::Graph<N,E>::IsConnected(const N& src, const N& dst){
   }
   return false;
 }
-/*
-template<typename N, typename E>
-std::vector<N> gdwg::Graph<N,E>::GetNodes(){}
 
+template<typename N, typename E>
+std::vector<N> gdwg::Graph<N,E>::GetNodes(){
+  std::vector<N> vec;
+  for(auto it = nodes_.begin(); it != nodes_.end(); ++it) {
+    vec.push_back(*it);
+  }
+  return vec;
+}
+/*
 template<typename N, typename E>
 std::vector<N> gdwg::Graph<N,E>::GetConnected(const N& src){}
 
