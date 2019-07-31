@@ -61,7 +61,7 @@ class Graph {
         auto curNode = it->second;
         os << *curNode->val_ << " (\n";
         for(auto& e : curNode->outGoing_) {
-          os << "  " << *e->dst_->val_ << " | " << *e->weight_ << "\n";
+          os << "  " << *e->dst_.lock()->val_ << " | " << *e->weight_ << "\n";
         }
         os << ")\n";
       }
@@ -81,8 +81,8 @@ class Graph {
     };
 
     struct Edge {
-      std::shared_ptr<Node> src_;
-      std::shared_ptr<Node> dst_;
+      std::weak_ptr<Node> src_;
+      std::weak_ptr<Node> dst_;
       std::shared_ptr<int> weight_;
       Edge(std::shared_ptr<Node> src, std::shared_ptr<Node> dst,std::shared_ptr<E> weight){
         src_ = src;
