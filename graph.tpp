@@ -33,6 +33,9 @@ gdwg::Graph<N, E>& gdwg::Graph<N,E>::operator=(const Graph<N,E>&&){}
 // ---------------------- Methods ----------------------
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::InsertNode(const N& val){
+  if(IsNode(val)) {
+    return false;
+  }
   auto valCpy = std::make_shared<N>(val);
   auto newN = Node(valCpy);
   nodes_.insert(std::make_pair(*valCpy, std::make_shared<Node>(newN)));
@@ -84,13 +87,25 @@ void gdwg::Graph<N,E>::MergeReplace(const N& oldData, const N& newData){}
 
 template<typename N, typename E>
 void gdwg::Graph<N,E>::Clear(){}
+*/
+template<typename N, typename E>
+bool gdwg::Graph<N,E>::IsNode(const N& val){
+  return nodes_.count(val);
+}
 
 template<typename N, typename E>
-bool gdwg::Graph<N,E>::IsNode(const N& val){}
-
-template<typename N, typename E>
-bool gdwg::Graph<N,E>::IsConnected(const N& src, const N& dst){}
-
+bool gdwg::Graph<N,E>::IsConnected(const N& src, const N& dst){
+  auto& nSrc = nodes_.at(src);
+  auto& nDst = nodes_.at(dst);
+  if(!nSrc || !nDst) {
+    throw std::runtime_error("Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
+  }
+  for(auto& edge : nSrc->outGoing_) {
+    if(edge->src_.lock() == nSrc && edge->dst_.lock() == nDst) return true;
+  }
+  return false;
+}
+/*
 template<typename N, typename E>
 std::vector<N> gdwg::Graph<N,E>::GetNodes(){}
 

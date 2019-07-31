@@ -35,8 +35,10 @@ class Graph {
     bool Replace(const N& oldData, const N& newData);
     void MergeReplace(const N& oldData, const N& newData);
     void Clear();
+     */
     bool IsNode(const N& val);
     bool IsConnected(const N& src, const N& dst);
+    /*
     std::vector<N> GetNodes();
     std::vector<N> GetConnected(const N& src);
     std::vector<E> GetWeights(const N& src, const N& dst);
