@@ -22,6 +22,7 @@ int main() {
   g.InsertEdge("are", "you?", 3);
 
   std::cout << g << '\n';
+
   /*
   gdwg::Graph<std::string, int> g2{g};
 

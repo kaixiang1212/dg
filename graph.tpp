@@ -52,7 +52,26 @@ bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){  auto
 
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::DeleteNode(const N& del){
-  auto nodeRmv = nodes_.at(del);
+  auto& nodeRmv = nodes_.at(del);
+  for (auto& edge : nodeRmv->outGoing_) {
+    auto& dsts = edge->dst_.lock()->inGoing_;
+    for( auto iter = dsts.begin(); iter != dsts.end(); ++iter) {
+      if(*iter == edge) {
+        dsts.erase(iter);
+        break;
+      }
+    }
+  }
+  for (auto& edge : nodeRmv->inGoing_) {
+    auto& srcs = edge->src_.lock()->outGoing_;
+    for( auto iter = srcs.begin(); iter != srcs.end(); ++iter) {
+      if(*iter == edge) {
+        srcs.erase(iter);
+        break;
+      }
+    }
+  }
+  nodes_.erase(del);
   return true;
 }
 
