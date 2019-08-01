@@ -1,11 +1,10 @@
 #include <iostream>
-//#include "assignments/dg/graph.h"
-#include "graph.h"
+#include "assignments/dg/graph.h"
+//#include "graph.h"
 
 // ---------------------- Constructors ----------------------
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph()= default;
-
 /*
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph(typename std::vector<N>::const_iterator begin, typename std::vector<N>::const_iterator end){
@@ -46,7 +45,6 @@ gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& toMove) noexcept : nodes_{std::move
 
 template<typename N, typename E>
 gdwg::Graph<N, E>::~Graph()= default;
-
 */
 // ---------------------- Operations ----------------------
 /*
@@ -204,10 +202,3 @@ const_reverse_iterator gdwg::Graph<N,E>::rbegin(){}
 
 template<typename N, typename E>
 const_reverse_iterator gdwg::Graph<N,E>::rend(){}
-
-// ---------------------- Friends ----------------------
-template<typename N, typename E>
-bool operator==(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&){}
-template<typename N, typename E>
-bool operator!=(const gdwg::Graph<N, E>&, const gdwg::Graph<N, E>&){}
- */
