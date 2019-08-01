@@ -70,7 +70,7 @@ template<typename N, typename E>
 bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){  auto srcNode = nodes_.at(src);
   auto dstNode = nodes_.at(dst);
   auto wCpy = std::make_shared<E>(w);
-  Edge ed = Edge{srcNode, dstNode, wCpy};
+  Edge ed = Edge{srcNode->val_, dstNode->val_, wCpy};
   auto newEdge = std::make_shared<Edge>(ed);
   srcNode->outGoing_.push_back(newEdge);
   dstNode->inGoing_.push_back(newEdge);
@@ -202,3 +202,4 @@ const_reverse_iterator gdwg::Graph<N,E>::rbegin(){}
 
 template<typename N, typename E>
 const_reverse_iterator gdwg::Graph<N,E>::rend(){}
+*/

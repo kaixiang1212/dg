@@ -23,20 +23,22 @@ int main() {
 
   std::cout << g << '\n';
 
-  std::vector<int> a = g.GetWeights("hello", "are");
-  for(int i : a) {
-    std::cout << i << "\n";
-  }
   /*
-  gdwg::Graph<std::string, int> g2{g};
+  std::vector<std::string> a = g.GetNodes();
+  for(auto i : a) {
+    std::cout << i << "\n";
+  }*/
 
-  std::cout << g2 << "\n";
+  //gdwg::Graph<std::string, int> g2{g};
+
+  //std::cout << g2 << "\n";
 
   // This is a structured binding.
   // https://en.cppreference.com/w/cpp/language/structured_binding
   // It allows you to unpack your tuple.
+  /*
   for (const auto& [from, to, weight] : g) {
     std::cout << from << " -> " << to << " (weight " << weight << ")\n";
   }
-   */
+  */
 }
