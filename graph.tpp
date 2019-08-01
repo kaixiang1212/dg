@@ -6,6 +6,7 @@
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph()= default;
 
+/*
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph(typename std::vector<N>::const_iterator begin, typename std::vector<N>::const_iterator end){
   for (auto i = begin;i != end;++i) {
@@ -46,6 +47,7 @@ gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& toMove) noexcept : nodes_{std::move
 template<typename N, typename E>
 gdwg::Graph<N, E>::~Graph()= default;
 
+*/
 // ---------------------- Operations ----------------------
 /*
 template<typename N, typename E>
@@ -134,7 +136,7 @@ template<typename N, typename E>
 std::vector<N> gdwg::Graph<N,E>::GetNodes(){
   std::vector<N> vec;
   for(auto it = nodes_.begin(); it != nodes_.end(); ++it) {
-    vec.push_back(*it);
+    vec.push_back(*it->first);
   }
   return vec;
 }
@@ -145,10 +147,12 @@ std::vector<N> gdwg::Graph<N,E>::GetConnected(const N& src){
   if (!src) {
     throw std::out_of_range("Cannot call Graph::GetConnected if src doesn't exist in the graph");
   }
-  std::vector<N> vec;
+  std::vector<N> vec(nSrc->outGoing.size());
+  int i = 0;
   for (auto& edge : nSrc->outGoing_) {
     auto& dsts = edge->dst_.lock()->inGoing_;
-    vec.push_back(dsts);
+    vec[i] = dsts;
+    i++;
   }
 }
 
