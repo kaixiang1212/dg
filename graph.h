@@ -39,7 +39,7 @@ class Graph {
      */
     bool IsNode(const N& val);
     bool IsConnected(const N& src, const N& dst);
-    std::vector<N> GetNodes();
+    std::vector<N> GetNodes() const;
     std::vector<N> GetConnected(const N& src);
     std::vector<E> GetWeights(const N& src, const N& dst);
     /*
@@ -65,13 +65,14 @@ class Graph {
       if (g1Nodes.size() != g2Nodes.size()) {
         return true;
       }
-      for(int i = 0; i < g2Nodes.size(); i++) {
+      for(int i = 0; i < static_cast<int>(g2Nodes.size()); i++) {
         if(g1Nodes[i] != g2Nodes[i]) {
           return true;
         }
       }
       return false;
-     };
+    };
+
     friend std::ostream& operator<<(std::ostream& os, const gdwg::Graph<N, E>& g){
       for(auto it = g.nodes_.begin(); it != g.nodes_.end(); ++it){
         auto curNode = it->second;

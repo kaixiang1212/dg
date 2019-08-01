@@ -80,20 +80,12 @@ bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){  auto
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::DeleteNode(const N& del){
   auto& nodeRmv = nodes_.at(del);
-  for (auto& edge : nodeRmv->outGoing_) {
-    auto& dsts = edge->dst_.lock()->inGoing_;
-    for( auto iter = dsts.begin(); iter != dsts.end(); ++iter) {
-      if(*iter == edge) {
-        dsts.erase(iter);
-        break;
-      }
-    }
-  }
-  for (auto& edge : nodeRmv->inGoing_) {
-    auto& srcs = edge->src_.lock()->outGoing_;
-    for( auto iter = srcs.begin(); iter != srcs.end(); ++iter) {
-      if(*iter == edge) {
-        srcs.erase(iter);
+  for (auto edge : nodeRmv->inGoing_) {
+    std::shared_ptr<N>& src = edge->src_;
+    std::vector<std::shared_ptr<Edge>>& srcEdges = nodes_.at(*src)->outGoing_;
+    for( auto iter = srcEdges.begin(); iter != srcEdges.end(); ++iter ) {
+      if( *iter == edge ) {
+        srcEdges.erase( iter );
         break;
       }
     }
@@ -131,10 +123,10 @@ bool gdwg::Graph<N,E>::IsConnected(const N& src, const N& dst){
 }
 
 template<typename N, typename E>
-std::vector<N> gdwg::Graph<N,E>::GetNodes(){
+std::vector<N> gdwg::Graph<N,E>::GetNodes() const {
   std::vector<N> vec;
   for(auto it = nodes_.begin(); it != nodes_.end(); ++it) {
-    vec.push_back(*it->first);
+    vec.push_back(it->first);
   }
   return vec;
 }

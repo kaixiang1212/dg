@@ -23,15 +23,22 @@ int main() {
 
   std::cout << g << '\n';
 
-  /*
   std::vector<std::string> a = g.GetNodes();
   for(auto i : a) {
     std::cout << i << "\n";
-  }*/
+  }
 
-  //gdwg::Graph<std::string, int> g2{g};
+  gdwg::Graph<std::string, int> g2{g};
 
-  //std::cout << g2 << "\n";
+  std::cout << g2 << "\n";
+
+  std::cout << (g == g2) << "\n";
+
+  g2.DeleteNode("how");
+
+  std::cout << g2 << "\n";
+
+  std::cout << (g == g2) << "\n";
 
   // This is a structured binding.
   // https://en.cppreference.com/w/cpp/language/structured_binding
