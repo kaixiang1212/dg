@@ -1,29 +1,53 @@
 #include <iostream>
-#include "assignments/dg/graph.h"
-/*
+//#include "assignments/dg/graph.h"
+#include "graph.h"
+
 // ---------------------- Constructors ----------------------
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph()= default;
 
 template<typename N, typename E>
-gdwg::Graph<N, E>::Graph(typename std::vector<N>::const_iterator, typename std::vector<N>::const_iterator){}
+gdwg::Graph<N, E>::Graph(typename std::vector<N>::const_iterator begin, typename std::vector<N>::const_iterator end){
+  for (auto i = begin;i != end;++i) {
+    InsertNode(*i);
+  }
+}
 
 template<typename N, typename E>
-gdwg::Graph<N, E>::Graph(typename std::vector<std::tuple<N, N, E>>::const_iterator, typename std::vector<std::tuple<N, N, E>>::const_iterator){}
+gdwg::Graph<N, E>::Graph(typename std::vector<std::tuple<N, N, E>>::const_iterator begin, typename std::vector<std::tuple<N, N, E>>::const_iterator end){
+  for (auto i = begin;i != end;++i) {
+    auto t = *i;
+    N start = std::get<0>(t);
+    N dest = std::get<1>(t);
+
+    InsertNode(start);
+    InsertNode(dest);
+    InsertEdge(start, dest, std::get<2>(t));
+  }
+}
 
 template<typename N, typename E>
-gdwg::Graph<N, E>::Graph(std::initializer_list<N>){}
+gdwg::Graph<N, E>::Graph(std::initializer_list<N> list){
+  for (auto i = list.begin();i != list.end();i++){
+    InsertNode(*i);
+  }
+}
 
 template<typename N, typename E>
-gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>&) noexcept = default;
+gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>& toCopy) noexcept {
+  nodes_ = toCopy.nodes_;
+}
 
 template<typename N, typename E>
-gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&&) noexcept {}
+gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& toMove) noexcept : nodes_{std::move(toMove.nodes_)}{
+}
+
 
 template<typename N, typename E>
 gdwg::Graph<N, E>::~Graph()= default;
 
 // ---------------------- Operations ----------------------
+/*
 template<typename N, typename E>
 gdwg::Graph<N, E>& gdwg::Graph<N,E>::operator=(const Graph<N,E>&){}
 
