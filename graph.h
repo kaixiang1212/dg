@@ -15,24 +15,20 @@ class Graph {
     // ---------------------- Constructors ----------------------
 
     Graph<N, E>();
-    /*
     Graph<N, E>(typename std::vector<N>::const_iterator, typename std::vector<N>::const_iterator);
     Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator, typename std::vector<std::tuple<N, N, E>>::const_iterator);
     Graph<N, E>(std::initializer_list<N>);
-    */
     Graph<N, E>(const gdwg::Graph<N, E>&) noexcept ;
     /*
     Graph<N, E>(gdwg::Graph<N, E>&&) noexcept ;
 
     ~Graph<N, E>();
-    */
     // ---------------------- Operations ----------------------
-    /*
+
     Graph<N, E>& operator=(const Graph&);
     Graph<N, E>& operator=(const Graph&&);
-
+    */
     // ---------------------- Methods ----------------------
-     */
     bool InsertNode(const N& val);
     bool InsertEdge(const N& src, const N& dst, const E& w);
     bool DeleteNode(const N&);

@@ -5,7 +5,7 @@
 // ---------------------- Constructors ----------------------
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph()= default;
-/*
+
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph(typename std::vector<N>::const_iterator begin, typename std::vector<N>::const_iterator end){
   for (auto i = begin;i != end;++i) {
@@ -37,7 +37,7 @@ template<typename N, typename E>
 gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>& toCopy) noexcept {
   nodes_ = toCopy.nodes_;
 }
-
+/*
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& toMove) noexcept : nodes_{std::move(toMove.nodes_)}{
 }
