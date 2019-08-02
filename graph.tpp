@@ -98,24 +98,74 @@ bool gdwg::Graph<N,E>::DeleteNode(const N& del){
   return true;
 }
 
-// TODO:: Replace without deleting and inserting again
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::Replace(const N& oldData, const N& newData){
   if (!IsNode(oldData)){
     throw std::runtime_error("Cannot call Graph::Replace on a node that doesn't exist");
+  } else if (IsNode(newData)){
+    return false;
   }
-  auto pair = *(nodes_.find(oldData));
-  auto node = pair.second;
-  auto key = pair.first;
-  key = newData;
-  *(node->val_)= newData;
-  nodes_.erase(oldData);
-  nodes_.insert(std::make_pair(key, node));
+  std::vector<std::tuple<std::shared_ptr<N>,std::shared_ptr<E>>> inGoing, outGoing;
+  auto& node = nodes_.at(oldData);
+  for (auto edge : node->outGoing_) {
+    std::shared_ptr<N>& dst = edge->dst_;
+    std::shared_ptr<E> weight = edge->weight_;
+    outGoing.emplace_back(dst,weight);
+  }
+  for (auto edge : node->inGoing_) {
+    std::shared_ptr<N>& src = edge->src_;
+    std::shared_ptr<E> weight = edge->weight_;
+    inGoing.emplace_back(src,weight);
+  }
+  DeleteNode(oldData);
+  InsertNode(newData);
+  for (auto i : outGoing) {
+    auto dst = std::get<0>(i);
+    auto weight = std::get<1>(i);
+    InsertEdge(newData, *dst, *weight);
+  }
+  for (auto i : inGoing) {
+    auto src = std::get<0>(i);
+    auto weight = std::get<1>(i);
+    InsertEdge(*src, newData, *weight);
+  }
   return true;
 }
 
 template<typename N, typename E>
-void gdwg::Graph<N,E>::MergeReplace(const N& oldData, const N& newData){}
+void gdwg::Graph<N,E>::MergeReplace(const N& oldData, const N& newData){
+  if (!IsNode(oldData) || !IsNode(newData)){
+    throw std::runtime_error("Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
+  }
+  std::vector<std::tuple<std::shared_ptr<N>,std::shared_ptr<E>>> inGoing, outGoing;
+  auto& node = nodes_.at(oldData);
+  for (auto edge : node->outGoing_) {
+    std::shared_ptr<N>& dst = edge->dst_;
+    std::shared_ptr<E> weight = edge->weight_;
+    outGoing.emplace_back(dst,weight);
+  }
+  for (auto edge : node->inGoing_) {
+    std::shared_ptr<N>& src = edge->src_;
+    std::shared_ptr<E> weight = edge->weight_;
+    inGoing.emplace_back(src,weight);
+  }
+  DeleteNode(oldData);
+  InsertNode(newData);
+  for (auto i : outGoing) {
+    auto dst = std::get<0>(i);
+    auto weight = std::get<1>(i);
+    if (!IsConnected(newData, *dst)){
+      InsertEdge(newData, *dst, *weight);
+    }
+  }
+  for (auto i : inGoing) {
+    auto src = std::get<0>(i);
+    auto weight = std::get<1>(i);
+    if (!IsConnected(*src, newData)){
+      InsertEdge(*src, newData, *weight);
+    }
+  }
+}
 
 template<typename N, typename E>
 void gdwg::Graph<N,E>::Clear(){
