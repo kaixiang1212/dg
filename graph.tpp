@@ -1,6 +1,6 @@
 #include <iostream>
-#include "assignments/dg/graph.h"
-//#include "graph.h"
+//#include "assignments/dg/graph.h"
+#include "graph.h"
 
 // ---------------------- Constructors ----------------------
 template<typename N, typename E>
@@ -61,7 +61,7 @@ gdwg::Graph<N, E>& gdwg::Graph<N,E>::operator=(Graph<N,E>&& toMove) noexcept {
 // ---------------------- Methods ----------------------
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::InsertNode(const N& val){
-  if(IsNode(val)) {
+  if (IsNode(val)) {
     return false;
   }
   auto valCpy = std::make_shared<N>(val);
@@ -71,7 +71,8 @@ bool gdwg::Graph<N,E>::InsertNode(const N& val){
 }
 
 template<typename N, typename E>
-bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){  auto srcNode = nodes_.at(src);
+bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){
+  auto srcNode = nodes_.at(src);
   auto dstNode = nodes_.at(dst);
   auto wCpy = std::make_shared<E>(w);
   Edge ed = Edge{srcNode->val_, dstNode->val_, wCpy};
@@ -122,12 +123,16 @@ bool gdwg::Graph<N,E>::Replace(const N& oldData, const N& newData){
   for (auto i : outGoing) {
     auto dst = std::get<0>(i);
     auto weight = std::get<1>(i);
-    InsertEdge(newData, *dst, *weight);
+    if (!IsConnectedWeight(newData,*dst,*weight)){
+      InsertEdge(newData,*dst,*weight);
+    }
   }
   for (auto i : inGoing) {
     auto src = std::get<0>(i);
     auto weight = std::get<1>(i);
-    InsertEdge(*src, newData, *weight);
+    if (!IsConnectedWeight(*src,newData,*weight)){
+      InsertEdge(*src,newData,*weight);
+    }
   }
   return true;
 }
@@ -154,16 +159,12 @@ void gdwg::Graph<N,E>::MergeReplace(const N& oldData, const N& newData){
   for (auto i : outGoing) {
     auto dst = std::get<0>(i);
     auto weight = std::get<1>(i);
-    if (!IsConnected(newData, *dst)){
-      InsertEdge(newData, *dst, *weight);
-    }
+    InsertEdge(newData, *dst, *weight);
   }
   for (auto i : inGoing) {
     auto src = std::get<0>(i);
     auto weight = std::get<1>(i);
-    if (!IsConnected(*src, newData)){
-      InsertEdge(*src, newData, *weight);
-    }
+    InsertEdge(*src,newData,*weight);
   }
 }
 
@@ -186,6 +187,14 @@ bool gdwg::Graph<N,E>::IsConnected(const N& src, const N& dst){
   }
   for(auto& edge : nSrc->outGoing_) {
     if(edge->src_ == nSrc->val_ && edge->dst_ == nDst->val_) return true;
+  }
+  return false;
+}
+
+template<typename N, typename E>
+bool gdwg::Graph<N,E>::IsConnectedWeight(const N& src, const N& dst, const E& wgt){
+  for (auto i : GetWeights(src,dst)){
+    if (i == wgt) return true;
   }
   return false;
 }
@@ -223,7 +232,7 @@ std::vector<E> gdwg::Graph<N,E>::GetWeights(const N& src, const N& dst){
     throw std::out_of_range("Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
   }
   for(auto& edge : nSrc->outGoing_) {
-    if(edge->src_.lock() == nSrc && edge->dst_.lock() == nDst) {
+    if(edge->src_ == nSrc->val_ && edge->dst_ == nDst->val_) {
       vec.push_back(*edge->weight_);
     }
   }

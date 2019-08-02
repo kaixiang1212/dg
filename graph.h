@@ -1,17 +1,18 @@
 #ifndef ASSIGNMENTS_DG_GRAPH_H_
 #define ASSIGNMENTS_DG_GRAPH_H_
 
-#include <vector>
 #include <iterator>
 #include <map>
 #include <memory>
+#include <vector>
 
 namespace gdwg {
 
 template <typename N, typename E>
 class Graph {
+  struct Edge;
   public:
-    class const_iterator {};
+ class const_iterator{};
     // ---------------------- Constructors ----------------------
 
     Graph<N, E>();
@@ -38,6 +39,7 @@ class Graph {
 
     bool IsNode(const N& val);
     bool IsConnected(const N& src, const N& dst);
+    bool IsConnectedWeight(const N& src, const N& dst, const E& wgt);
     std::vector<N> GetNodes() const;
     std::vector<N> GetConnected(const N& src);
     std::vector<E> GetWeights(const N& src, const N& dst);
@@ -85,7 +87,6 @@ class Graph {
     }
 
   private:
-    struct Edge;
     struct Node;
     std::map<N, std::shared_ptr<Node>> nodes_;
 
