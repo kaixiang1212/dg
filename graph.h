@@ -12,7 +12,42 @@ template <typename N, typename E>
 class Graph {
   struct Edge;
   public:
- class const_iterator{};
+ class const_iterator: public std::iterator<std::bidirectional_iterator_tag,
+                                            std::tuple<N,N,E>,
+                                            int,
+                                            std::tuple<N*,N*,E*>,
+                                            std::tuple<N&,N&,E&>> {
+     public:
+      using iterator_category = std::bidirectional_iterator_tag;
+      using value_type = std::tuple<N,N,E>;
+      using reference = std::tuple<N&,N&,E&>;
+      using pointer = std::tuple<N*,N*,E*>;
+      using difference_type = int;
+
+      reference operator*() const { return node_->value; }
+      pointer operator->() const { return &(operator*()); }
+      const_iterator operator++() {
+        node_ = node_->next.get();
+        return *this;
+      }
+      const_iterator operator++(int) {
+        auto copy{*this};
+        ++(*this);
+        return copy;
+      }
+
+      friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) {
+        return lhs.node_ == rhs.node_;
+      }
+
+//      friend bool operator!=(const Iterator& lhs, const Iterator& rhs) { return !(lhs == rhs); }
+
+     private:
+//      explicit Iterator(Node* node): node_{node} {}
+      Edge* node_;
+
+      friend class Graph;
+    };
     // ---------------------- Constructors ----------------------
 
     Graph<N, E>();
@@ -39,7 +74,7 @@ class Graph {
 
     bool IsNode(const N& val);
     bool IsConnected(const N& src, const N& dst);
-    bool IsConnectedWeight(const N& src, const N& dst, const E& wgt);
+    bool IsConnectedWeight(const N& src, const N& dst, const E&);
     std::vector<N> GetNodes() const;
     std::vector<N> GetConnected(const N& src);
     std::vector<E> GetWeights(const N& src, const N& dst);
