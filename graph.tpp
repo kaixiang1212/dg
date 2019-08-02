@@ -72,6 +72,11 @@ bool gdwg::Graph<N,E>::InsertNode(const N& val){
 
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){
+  if (!IsNode(src) || !IsNode(dst)){
+    throw std::runtime_error("Cannot call Graph::InsertEdge when either src or dst node does not exist");
+  } else if (IsConnectedWeight(src,dst,w)){
+    return false;
+  }
   auto srcNode = nodes_.at(src);
   auto dstNode = nodes_.at(dst);
   auto wCpy = std::make_shared<E>(w);
