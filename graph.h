@@ -19,24 +19,23 @@ class Graph {
     Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator, typename std::vector<std::tuple<N, N, E>>::const_iterator);
     Graph<N, E>(std::initializer_list<N>);
     Graph<N, E>(const gdwg::Graph<N, E>&) noexcept ;
-    /*
     Graph<N, E>(gdwg::Graph<N, E>&&) noexcept ;
 
     ~Graph<N, E>();
     // ---------------------- Operations ----------------------
 
     Graph<N, E>& operator=(const Graph&);
-    Graph<N, E>& operator=(const Graph&&);
-    */
+    Graph<N, E>& operator=(Graph&&) noexcept ;
+
     // ---------------------- Methods ----------------------
     bool InsertNode(const N& val);
     bool InsertEdge(const N& src, const N& dst, const E& w);
     bool DeleteNode(const N&);
-    /*
+
     bool Replace(const N& oldData, const N& newData);
     void MergeReplace(const N& oldData, const N& newData);
     void Clear();
-     */
+
     bool IsNode(const N& val);
     bool IsConnected(const N& src, const N& dst);
     std::vector<N> GetNodes() const;
@@ -101,6 +100,9 @@ class Graph {
           return  false;
         }
         return true;
+      }
+      void set_val(const N new_val){
+        val_ = new_val;
       }
     };
 

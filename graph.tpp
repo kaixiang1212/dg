@@ -1,6 +1,6 @@
 #include <iostream>
-#include "assignments/dg/graph.h"
-//#include "graph.h"
+//#include "assignments/dg/graph.h"
+#include "graph.h"
 
 // ---------------------- Constructors ----------------------
 template<typename N, typename E>
@@ -37,7 +37,7 @@ template<typename N, typename E>
 gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>& toCopy) noexcept {
   nodes_ = toCopy.nodes_;
 }
-/*
+
 template<typename N, typename E>
 gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& toMove) noexcept : nodes_{std::move(toMove.nodes_)}{
 }
@@ -45,15 +45,19 @@ gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& toMove) noexcept : nodes_{std::move
 
 template<typename N, typename E>
 gdwg::Graph<N, E>::~Graph()= default;
-*/
+
 // ---------------------- Operations ----------------------
-/*
-template<typename N, typename E>
-gdwg::Graph<N, E>& gdwg::Graph<N,E>::operator=(const Graph<N,E>&){}
 
 template<typename N, typename E>
-gdwg::Graph<N, E>& gdwg::Graph<N,E>::operator=(const Graph<N,E>&&){}
-*/
+gdwg::Graph<N, E>& gdwg::Graph<N,E>::operator=(const Graph<N,E>& toCopy){
+    nodes_ = toCopy.nodes_;
+}
+
+template<typename N, typename E>
+gdwg::Graph<N, E>& gdwg::Graph<N,E>::operator=(Graph<N,E>&& toMove) noexcept {
+    nodes_ = std::move(toMove.nodes_);
+}
+
 // ---------------------- Methods ----------------------
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::InsertNode(const N& val){
@@ -94,16 +98,30 @@ bool gdwg::Graph<N,E>::DeleteNode(const N& del){
   return true;
 }
 
-/*
+// TODO:: Replace without deleting and inserting again
 template<typename N, typename E>
-bool gdwg::Graph<N,E>::Replace(const N& oldData, const N& newData){}
+bool gdwg::Graph<N,E>::Replace(const N& oldData, const N& newData){
+  if (!IsNode(oldData)){
+    throw std::runtime_error("Cannot call Graph::Replace on a node that doesn't exist");
+  }
+  auto pair = *(nodes_.find(oldData));
+  auto node = pair.second;
+  auto key = pair.first;
+  key = newData;
+  *(node->val_)= newData;
+  nodes_.erase(oldData);
+  nodes_.insert(std::make_pair(key, node));
+  return true;
+}
 
 template<typename N, typename E>
 void gdwg::Graph<N,E>::MergeReplace(const N& oldData, const N& newData){}
 
 template<typename N, typename E>
-void gdwg::Graph<N,E>::Clear(){}
-*/
+void gdwg::Graph<N,E>::Clear(){
+  nodes_.clear();
+}
+
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::IsNode(const N& val){
   return nodes_.count(val);
