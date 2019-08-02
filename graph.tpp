@@ -84,6 +84,9 @@ bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){
 
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::DeleteNode(const N& del){
+  if (!IsNode(del)){
+    return false;
+  }
   auto& nodeRmv = nodes_.at(del);
   for (auto edge : nodeRmv->inGoing_) {
     std::shared_ptr<N>& src = edge->src_;
