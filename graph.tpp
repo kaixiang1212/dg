@@ -1,6 +1,6 @@
 #include <iostream>
-//#include "assignments/dg/graph.h"
-#include "graph.h"
+#include "assignments/dg/graph.h"
+//#include "graph.h"
 
 // ---------------------- Constructors ----------------------
 template<typename N, typename E>
@@ -185,7 +185,7 @@ bool gdwg::Graph<N,E>::IsConnected(const N& src, const N& dst){
     throw std::runtime_error("Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
   }
   for(auto& edge : nSrc->outGoing_) {
-    if(edge->src_.lock() == nSrc && edge->dst_.lock() == nDst) return true;
+    if(edge->src_ == nSrc->val_ && edge->dst_ == nDst->val_) return true;
   }
   return false;
 }
