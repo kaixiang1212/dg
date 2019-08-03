@@ -1,17 +1,18 @@
 #ifndef ASSIGNMENTS_DG_GRAPH_H_
 #define ASSIGNMENTS_DG_GRAPH_H_
 
-#include <vector>
 #include <iterator>
 #include <map>
 #include <memory>
+#include <vector>
 
 namespace gdwg {
 
 template <typename N, typename E>
 class Graph {
+  struct Edge;
   public:
-    class const_iterator {};
+ class const_iterator{};
     // ---------------------- Constructors ----------------------
 
     Graph<N, E>();
@@ -19,26 +20,26 @@ class Graph {
     Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator, typename std::vector<std::tuple<N, N, E>>::const_iterator);
     Graph<N, E>(std::initializer_list<N>);
     Graph<N, E>(const gdwg::Graph<N, E>&) noexcept ;
-    /*
     Graph<N, E>(gdwg::Graph<N, E>&&) noexcept ;
 
     ~Graph<N, E>();
     // ---------------------- Operations ----------------------
 
     Graph<N, E>& operator=(const Graph&);
-    Graph<N, E>& operator=(const Graph&&);
-    */
+    Graph<N, E>& operator=(Graph&&) noexcept ;
+
     // ---------------------- Methods ----------------------
     bool InsertNode(const N& val);
     bool InsertEdge(const N& src, const N& dst, const E& w);
     bool DeleteNode(const N&);
-    /*
+
     bool Replace(const N& oldData, const N& newData);
     void MergeReplace(const N& oldData, const N& newData);
     void Clear();
-     */
+
     bool IsNode(const N& val);
     bool IsConnected(const N& src, const N& dst);
+    bool IsConnectedWeight(const N& src, const N& dst, const E&);
     std::vector<N> GetNodes() const;
     std::vector<N> GetConnected(const N& src);
     std::vector<E> GetWeights(const N& src, const N& dst);
@@ -86,7 +87,6 @@ class Graph {
     }
 
   private:
-    struct Edge;
     struct Node;
     std::map<N, std::shared_ptr<Node>> nodes_;
 
@@ -101,6 +101,9 @@ class Graph {
           return  false;
         }
         return true;
+      }
+      void set_val(const N new_val){
+        val_ = new_val;
       }
     };
 
