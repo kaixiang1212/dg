@@ -1,6 +1,6 @@
 #include <iostream>
-//#include "assignments/dg/graph.h"
-#include "graph.h"
+#include "assignments/dg/graph.h"
+//#include "graph.h"
 
 // ---------------------- Constructors ----------------------
 template<typename N, typename E>
@@ -39,8 +39,7 @@ gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>& toCopy) noexcept {
 }
 
 template<typename N, typename E>
-gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& toMove) noexcept : nodes_{std::move(toMove.nodes_)}{
-}
+gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& toMove) noexcept : nodes_{std::move(toMove.nodes_)}{}
 
 
 template<typename N, typename E>
@@ -222,13 +221,14 @@ std::vector<N> gdwg::Graph<N,E>::GetConnected(const N& src){
     throw std::out_of_range("Cannot call Graph::GetConnected if src doesn't exist in the graph");
   }
   auto& nSrc = nodes_.at(src);
-  std::vector<N> vec(nSrc->outGoing.size());
+  std::vector<N> vec(nSrc->outGoing_.size());
   int i = 0;
   for (auto& edge : nSrc->outGoing_) {
-    auto& dsts = edge->dst_.lock()->inGoing_;
+    auto& dsts = *(edge->dst_);
     vec[i] = dsts;
     i++;
   }
+  return vec;
 }
 
 template<typename N, typename E>
