@@ -188,11 +188,11 @@ bool gdwg::Graph<N,E>::IsNode(const N& val){
 
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::IsConnected(const N& src, const N& dst){
-  auto& nSrc = nodes_.at(src);
-  auto& nDst = nodes_.at(dst);
-  if(!nSrc || !nDst) {
+  if(!IsNode(src) || !IsNode(dst)) {
     throw std::runtime_error("Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
   }
+  auto& nSrc = nodes_.at(src);
+  auto& nDst = nodes_.at(dst);
   for(auto& edge : nSrc->outGoing_) {
     if(edge->src_ == nSrc->val_ && edge->dst_ == nDst->val_) return true;
   }
@@ -218,10 +218,10 @@ std::vector<N> gdwg::Graph<N,E>::GetNodes() const {
 
 template<typename N, typename E>
 std::vector<N> gdwg::Graph<N,E>::GetConnected(const N& src){
-  auto& nSrc = nodes_.at(src);
-  if (!src) {
+  if (!IsNode(src)) {
     throw std::out_of_range("Cannot call Graph::GetConnected if src doesn't exist in the graph");
   }
+  auto& nSrc = nodes_.at(src);
   std::vector<N> vec(nSrc->outGoing.size());
   int i = 0;
   for (auto& edge : nSrc->outGoing_) {
@@ -233,12 +233,12 @@ std::vector<N> gdwg::Graph<N,E>::GetConnected(const N& src){
 
 template<typename N, typename E>
 std::vector<E> gdwg::Graph<N,E>::GetWeights(const N& src, const N& dst){
+  if(!IsNode(src) || !IsNode(dst)) {
+    throw std::out_of_range("Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
+  }
   std::vector<E> vec;
   auto& nSrc = nodes_.at(src);
   auto& nDst = nodes_.at(dst);
-  if(!nSrc || !nDst) {
-    throw std::out_of_range("Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
-  }
   for(auto& edge : nSrc->outGoing_) {
     if(edge->src_ == nSrc->val_ && edge->dst_ == nDst->val_) {
       vec.push_back(*edge->weight_);
