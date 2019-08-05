@@ -81,8 +81,28 @@ bool gdwg::Graph<N,E>::InsertEdge(const N& src, const N& dst, const E& w){
   auto wCpy = std::make_shared<E>(w);
   Edge ed = Edge{srcNode->val_, dstNode->val_, wCpy};
   auto newEdge = std::make_shared<Edge>(ed);
-  srcNode->outGoing_.push_back(newEdge);
-  dstNode->inGoing_.push_back(newEdge);
+  bool foundPos = false;
+  for(auto it = srcNode->outGoing_.begin(); it != srcNode->outGoing_.end(); ++it) {
+    if(*newEdge < **it) {
+      srcNode->outGoing_.insert(it, 1, newEdge);
+      foundPos = true;
+      break;
+    }
+  }
+  if(!foundPos) {
+    srcNode->outGoing_.push_back(newEdge);
+  }
+  foundPos = false;
+  for(auto it = dstNode->inGoing_.begin(); it != dstNode->inGoing_.end(); ++it) {
+    if(*newEdge < **it) {
+      dstNode->inGoing_.insert(it, 1, newEdge);
+      foundPos = true;
+      break;
+    }
+  }
+  if(!foundPos) {
+    dstNode->inGoing_.push_back(newEdge);
+  }
   return true;
 }
 
@@ -255,25 +275,37 @@ bool gdwg::Graph<N,E>::erase(const N& src, const N& dst, const E& w){}
 
 template<typename N, typename E>
 const_iterator gdwg::Graph<N,E>::erase(const_iterator it){}
+*/
+template<typename N, typename E>
+typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::cbegin(){
+  const_iterator it(nodes_.begin(), nodes_.end(), nodes_.begin()->second->outGoing_.begin());
+  return it;
+}
 
 template<typename N, typename E>
-const_iterator gdwg::Graph<N,E>::cbegin(){}
-
-template<typename N, typename E>
-const_iterator gdwg::Graph<N,E>::cend(){}
-
+typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::cend(){
+  const_iterator it(nodes_.end(), nodes_.end(), nodes_.begin()->second->outGoing_.end());
+  return it;
+}
+/*
 template<typename N, typename E>
 const_reverse_iterator gdwg::Graph<N,E>::crbegin(){}
 
 template<typename N, typename E>
 const_iterator gdwg::Graph<N,E>::crend(){}
+*/
+template<typename N, typename E>
+typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::begin(){
+  const_iterator it(nodes_.begin(), nodes_.end(), nodes_.begin()->second->outGoing_.begin());
+  return it;
+}
 
 template<typename N, typename E>
-const_iterator gdwg::Graph<N,E>::begin(){}
-
-template<typename N, typename E>
-const_iterator gdwg::Graph<N,E>::end(){}
-
+typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::end(){
+  const_iterator it(nodes_.end(), nodes_.end(), nodes_.begin()->second->outGoing_.end());
+  return it;
+}
+/*
 template<typename N, typename E>
 const_reverse_iterator gdwg::Graph<N,E>::rbegin(){}
 

@@ -5,14 +5,17 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <iostream>
+
 
 namespace gdwg {
 
 template <typename N, typename E>
 class Graph {
-  struct Edge;
+  private:
+    class const_iterator;
+
   public:
- class const_iterator{};
     // ---------------------- Constructors ----------------------
 
     Graph<N, E>();
@@ -47,12 +50,16 @@ class Graph {
     const_iterator find(const N&, const N&, const E&);
     bool erase(const N& src, const N& dst, const E& w);
     const_iterator erase(const_iterator it);
+    */
     const_iterator cbegin();
     const_iterator cend();
+    /*
     const_reverse_iterator crbegin();
     const_iterator crend();
+     */
     const_iterator begin();
     const_iterator end();
+    /*
     const_reverse_iterator rbegin();
     const_reverse_iterator rend();
     */
@@ -87,6 +94,7 @@ class Graph {
     }
 
   private:
+    struct Edge;
     struct Node;
     std::map<N, std::shared_ptr<Node>> nodes_;
 
@@ -122,7 +130,75 @@ class Graph {
         }
         return true;
       }
+      friend bool operator<(const Edge& lhs, const Edge& rhs) {
+        if(*lhs.src_  < *rhs.src_) {
+          return true;
+        } else if (*lhs.src_ == *rhs.src_) {
+          if(*lhs.dst_  < *rhs.dst_) {
+            return true;
+          } else if (*lhs.dst_ == *rhs.dst_) {
+            if(*lhs.weight_ < *rhs.weight_) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
     };
+
+  class const_iterator{
+   public:
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = std::tuple<N, N, E>;
+    using reference = std::tuple<const N&,const N&,const E&>;
+
+    reference operator*() const {
+      const auto& edge = *edge_;
+      return {*edge->src_, *edge->dst_, *edge->weight_};
+    };
+    const_iterator& operator++() {
+      ++edge_;
+      if(edge_ == node_->second->outGoing_.end()) {
+        do {
+          ++node_;
+        } while (node_ != sentinel_ && node_->second->outGoing_.begin() == node_->second->outGoing_.end());
+        if (node_ != sentinel_) {
+          edge_ = node_->second->outGoing_.begin();
+        }
+      }
+      return *this;
+    }
+
+    const_iterator operator++(int) {
+      auto copy{*this};
+      ++(*this);
+      return copy;
+    };
+    const_iterator& operator--();
+    const_iterator operator--(int) {
+      auto copy{*this};
+      --(*this);
+      return copy;
+    };
+
+    friend bool operator==(const const_iterator& lhs, const const_iterator& rhs) {
+      return lhs.node_ == rhs.node_ &&
+          (lhs.node_ == lhs.sentinel_ || lhs.edge_ == rhs.edge_);
+    }
+
+    friend bool operator!=(const const_iterator& lhs, const const_iterator& rhs) {
+      return !(lhs==rhs);
+    }
+
+   private:
+    typename std::map<N, std::shared_ptr<Node>>::iterator node_;
+    typename std::map<N, std::shared_ptr<Node>>::iterator sentinel_;
+    typename std::vector<std::shared_ptr<Edge>>::iterator edge_;
+    const_iterator(const decltype(node_)& node, const decltype(sentinel_)& sentinel,
+                   const decltype(edge_)& edge): node_{node}, sentinel_{sentinel}, edge_{edge} {};
+
+    friend class Graph;
+  };
 };
 
 
