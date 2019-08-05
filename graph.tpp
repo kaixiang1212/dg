@@ -287,13 +287,19 @@ typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::cend(){
   const_iterator it(nodes_.end(), nodes_.end(), nodes_.begin()->second->outGoing_.end());
   return it;
 }
-/*
-template<typename N, typename E>
-const_reverse_iterator gdwg::Graph<N,E>::crbegin(){}
 
 template<typename N, typename E>
-const_iterator gdwg::Graph<N,E>::crend(){}
-*/
+typename gdwg::Graph<N,E>::const_reverse_iterator gdwg::Graph<N,E>::crbegin(){
+  const_reverse_iterator it(nodes_.rbegin(), nodes_.rend(), nodes_.rbegin()->second->outGoing_.rbegin());
+  return it;
+}
+
+template<typename N, typename E>
+typename gdwg::Graph<N,E>::const_reverse_iterator gdwg::Graph<N,E>::crend(){
+  const_reverse_iterator it(nodes_.rend(), nodes_.rend(), nodes_.rbegin()->second->outGoing_.rend());
+  return it;
+}
+
 template<typename N, typename E>
 typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::begin(){
   const_iterator it(nodes_.begin(), nodes_.end(), nodes_.begin()->second->outGoing_.begin());
@@ -305,10 +311,15 @@ typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::end(){
   const_iterator it(nodes_.end(), nodes_.end(), nodes_.begin()->second->outGoing_.end());
   return it;
 }
-/*
-template<typename N, typename E>
-const_reverse_iterator gdwg::Graph<N,E>::rbegin(){}
 
 template<typename N, typename E>
-const_reverse_iterator gdwg::Graph<N,E>::rend(){}
-*/
+typename gdwg::Graph<N,E>::const_reverse_iterator gdwg::Graph<N,E>::rbegin(){
+  const_reverse_iterator it(nodes_.rbegin(), nodes_.rend(), nodes_.rbegin()->second->outGoing_.rbegin());
+  return it;
+}
+
+template<typename N, typename E>
+typename gdwg::Graph<N,E>::const_reverse_iterator gdwg::Graph<N,E>::rend() {
+  const_reverse_iterator it(nodes_.rend(), nodes_.rend(), nodes_.rbegin()->second->outGoing_.rend());
+  return it;
+}

@@ -12,10 +12,10 @@ namespace gdwg {
 
 template <typename N, typename E>
 class Graph {
-  private:
-    class const_iterator;
 
   public:
+  class const_iterator;
+  class const_reverse_iterator;
     // ---------------------- Constructors ----------------------
 
     Graph<N, E>();
@@ -53,16 +53,13 @@ class Graph {
     */
     const_iterator cbegin();
     const_iterator cend();
-    /*
     const_reverse_iterator crbegin();
-    const_iterator crend();
-     */
+    const_reverse_iterator crend();
     const_iterator begin();
     const_iterator end();
-    /*
     const_reverse_iterator rbegin();
     const_reverse_iterator rend();
-    */
+
     // ---------------------- Friends ----------------------
     friend bool operator==(const gdwg::Graph<N, E>& g1, const gdwg::Graph<N, E>& g2) {
       return !(g1 != g2);
@@ -146,6 +143,8 @@ class Graph {
       }
     };
 
+
+ public:
   class const_iterator{
    public:
     using iterator_category = std::bidirectional_iterator_tag;
@@ -156,7 +155,7 @@ class Graph {
       const auto& edge = *edge_;
       return {*edge->src_, *edge->dst_, *edge->weight_};
     };
-    const_iterator& operator++() {
+    const const_iterator& operator++() {
       ++edge_;
       if(edge_ == node_->second->outGoing_.end()) {
         do {
@@ -169,14 +168,27 @@ class Graph {
       return *this;
     }
 
-    const_iterator operator++(int) {
-      auto copy{*this};
+    const const_iterator operator++(int) {
+      const auto copy{*this};
       ++(*this);
       return copy;
     };
-    const_iterator& operator--();
+
+    const_iterator& operator--() {
+      --edge_;
+      if(edge_ == node_->second->outGoing_.begin()) {
+        do {
+          --node_;
+        } while (node_ != sentinel_ && node_->second->outGoing_.begin() == node_->second->outGoing_.end());
+        if (node_ != sentinel_) {
+          edge_ = node_->second->outGoing_.end();
+        }
+      }
+      return *this;
+    };
+
     const_iterator operator--(int) {
-      auto copy{*this};
+      const auto& copy{*this};
       --(*this);
       return copy;
     };
@@ -199,6 +211,81 @@ class Graph {
 
     friend class Graph;
   };
+
+
+
+  class const_reverse_iterator{
+   public:
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = std::tuple<N, N, E>;
+    using reference = std::tuple<const N&,const N&,const E&>;
+
+    reference operator*() const {
+      const auto& edge = *edge_;
+      return {*edge->src_, *edge->dst_, *edge->weight_};
+    };
+
+    const const_reverse_iterator& operator++() {
+      /*
+      ++edge_;
+      if(edge_ == node_->second->outGoing_.rend()) {
+        do {
+          ++node_;
+        } while (node_ != sentinel_ && node_->second->outGoing_.rbegin() == node_->second->outGoing_.rend());
+        if (node_ != sentinel_) {
+          edge_ = node_->second->outGoing_.rbegin();
+        }
+      }
+      return *this;
+       */
+    }
+
+    const const_reverse_iterator operator++(int) {
+      const auto copy{*this};
+      ++(*this);
+      return copy;
+    };
+
+    const_reverse_iterator& operator--() {
+      /*
+      --edge_;
+      if(edge_ == node_->second->outGoing_.rbegin()) {
+        do {
+          --node_;
+        } while (node_ != sentinel_ && node_->second->outGoing_.rbegin() == node_->second->outGoing_.rend());
+        if (node_ != sentinel_) {
+          edge_ = node_->second->outGoing_.rend();
+        }
+      }*/
+      return *this;
+    };
+
+    const_reverse_iterator operator--(int) {
+      const auto& copy{*this};
+      --(*this);
+      return copy;
+    };
+
+    friend bool operator==(const const_reverse_iterator& lhs, const const_reverse_iterator& rhs) {
+      return lhs.node_ == rhs.node_ &&
+          (lhs.node_ == lhs.sentinel_ || lhs.edge_ == rhs.edge_);
+    }
+
+    friend bool operator!=(const const_reverse_iterator& lhs, const const_reverse_iterator& rhs) {
+      return !(lhs==rhs);
+    }
+
+   private:
+    typename std::map<N, std::shared_ptr<Node>>::reverse_iterator node_;
+    typename std::map<N, std::shared_ptr<Node>>::reverse_iterator sentinel_;
+    typename std::vector<std::shared_ptr<Edge>>::reverse_iterator edge_;
+    const_reverse_iterator(const decltype(node_)& node, const decltype(sentinel_)& sentinel,
+                   const decltype(edge_)& edge): node_{node}, sentinel_{sentinel}, edge_{edge} {};
+
+    friend class Graph;
+  };
+
+
 };
 
 
