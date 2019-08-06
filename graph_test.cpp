@@ -12,6 +12,8 @@
 #include <string>
 #include <utility>
 
+// =============================== Constructors Test ===============================
+
 TEST_CASE("Constructors") {
   SECTION("Iterator Constructor") {
     std::vector<char> vec{'a', 'b', 'c', 'd'};
@@ -66,6 +68,45 @@ TEST_CASE("Constructors") {
     SECTION("Edges are moved") { REQUIRE(aMove.IsConnected("a", "a")); }
   }
 }
+
+// =============================== Operations Test ===============================
+TEST_CASE("Copy Assignment"){
+  gdwg::Graph<std::string, int> a;
+  a.InsertNode("A");
+  a.InsertEdge("A","A",1);
+  gdwg::Graph<std::string, int> b;
+  b = a;
+  SECTION("They are Equals"){
+    REQUIRE(b == a);
+  }
+  SECTION("Changes to one wouldn't affect the other"){
+    b.InsertNode("New");
+    REQUIRE(b != a);
+  }
+  SECTION("Iterators are the same"){
+    for (const auto& [from, to, weight] : a){
+      auto i = b.begin();
+      const auto& [from_b, to_b, weight_b] = *i;
+      REQUIRE(from == from_b);
+      REQUIRE(to == to_b);
+      REQUIRE(weight == weight_b);
+      i++;
+    }
+  }
+}
+
+TEST_CASE("Move Assignment"){
+  gdwg::Graph<std::string, int> a;
+  a.InsertNode("A");
+  a.InsertEdge("A","A",1);
+  gdwg::Graph<std::string, int> b;
+  b = std::move(a);
+  SECTION("Moved-from graph is empty"){
+    a.GetNodes().empty();
+  }
+}
+
+// =============================== Methods Test ===============================
 
 TEST_CASE("Insert Edge") {
   std::vector<char> vec{'a', 'b', 'c', 'd'};
@@ -390,12 +431,17 @@ TEST_CASE("Iterators") {
   }
 }
 
+// =============================== Friends Test ===============================
+
 TEST_CASE("Operator == & !=") {
   gdwg::Graph<int, int> g{1};
   g.InsertEdge(1, 1, 4);
   g.InsertEdge(1, 1, 2);
   gdwg::Graph<int, int> gCopy(g);
-  SECTION("Equal") { REQUIRE(g == gCopy); }
+  gdwg::Graph<int,int> same{1};
+  same.InsertEdge(1, 1, 4);
+  same.InsertEdge(1, 1, 2);
+  SECTION("Equal") { REQUIRE(g == same); }
   SECTION("Not equal after removing node") {
     g.DeleteNode(1);
     REQUIRE(g != gCopy);

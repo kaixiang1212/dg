@@ -1,3 +1,6 @@
+
+#include "graph.h"
+
 // ---------------------- Constructors ----------------------
 template <typename N, typename E> gdwg::Graph<N, E>::Graph() = default;
 
@@ -47,11 +50,13 @@ template <typename N, typename E> gdwg::Graph<N, E>::~Graph() = default;
 template <typename N, typename E>
 gdwg::Graph<N, E> &gdwg::Graph<N, E>::operator=(const Graph<N, E>& toCopy) {
   nodes_ = toCopy.nodes_;
+  return *this;
 }
 
 template <typename N, typename E>
 gdwg::Graph<N, E> &gdwg::Graph<N, E>::operator=(Graph<N, E>&& toMove) noexcept {
   nodes_ = std::move(toMove.nodes_);
+  return *this;
 }
 
 // ---------------------- Methods ----------------------
