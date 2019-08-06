@@ -49,7 +49,7 @@ TEST_CASE("Constructors") {
       REQUIRE(gCopy.IsConnected("a", "b"));
       REQUIRE(gCopy.IsConnected("a", "a"));
     }
-    SECTION("Any change to original") {
+    SECTION("Changes to one wouldn't affect the other"){
       g.DeleteNode("a");
       REQUIRE(gCopy.IsNode("a"));
       REQUIRE(gCopy.IsConnected("a", "b"));
