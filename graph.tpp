@@ -1,10 +1,15 @@
+#include <memory>
+#include <tuple>
+#include <utility>
+#include <vector>
+
 // ---------------------- Constructors ----------------------
-template <typename N, typename E> gdwg::Graph<N, E>::Graph() = default;
+template <typename N, typename E>
+gdwg::Graph<N, E>::Graph() = default;
 
 template <typename N, typename E>
-gdwg::Graph<N, E>::Graph(
-    typename std::vector<N>::const_iterator begin,
-    typename std::vector<N>::const_iterator end) {
+gdwg::Graph<N, E>::Graph(typename std::vector<N>::const_iterator begin,
+                         typename std::vector<N>::const_iterator end) {
   for (auto i = begin; i != end; ++i) {
     InsertNode(*i);
   }
@@ -32,33 +37,33 @@ gdwg::Graph<N, E>::Graph(std::initializer_list<N> list) {
 }
 
 template <typename N, typename E>
-gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E> &toCopy) noexcept {
+gdwg::Graph<N, E>::Graph(const gdwg::Graph<N, E>& toCopy) noexcept {
   nodes_ = toCopy.nodes_;
 }
 
 template <typename N, typename E>
-gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E> &&toMove) noexcept :
-  nodes_{std::move(toMove.nodes_)} {}
+gdwg::Graph<N, E>::Graph(gdwg::Graph<N, E>&& toMove) noexcept : nodes_{std::move(toMove.nodes_)} {}
 
-template <typename N, typename E> gdwg::Graph<N, E>::~Graph() = default;
+template <typename N, typename E>
+gdwg::Graph<N, E>::~Graph() = default;
 
 // ---------------------- Operations ----------------------
 
 template <typename N, typename E>
-gdwg::Graph<N, E> &gdwg::Graph<N, E>::operator=(const Graph<N, E>& toCopy) {
+gdwg::Graph<N, E>& gdwg::Graph<N, E>::operator=(const Graph<N, E>& toCopy) {
   nodes_ = toCopy.nodes_;
   return *this;
 }
 
 template <typename N, typename E>
-gdwg::Graph<N, E> &gdwg::Graph<N, E>::operator=(Graph<N, E>&& toMove) noexcept {
+gdwg::Graph<N, E>& gdwg::Graph<N, E>::operator=(Graph<N, E>&& toMove) noexcept {
   nodes_ = std::move(toMove.nodes_);
   return *this;
 }
 
 // ---------------------- Methods ----------------------
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::InsertNode(const N &val) {
+bool gdwg::Graph<N, E>::InsertNode(const N& val) {
   if (IsNode(val)) {
     return false;
   }
@@ -69,7 +74,7 @@ bool gdwg::Graph<N, E>::InsertNode(const N &val) {
 }
 
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::InsertEdge(const N &src, const N &dst, const E &w) {
+bool gdwg::Graph<N, E>::InsertEdge(const N& src, const N& dst, const E& w) {
   if (!IsNode(src) || !IsNode(dst)) {
     throw std::runtime_error(
         "Cannot call Graph::InsertEdge when either src or dst node does not exist");
@@ -107,11 +112,11 @@ bool gdwg::Graph<N, E>::InsertEdge(const N &src, const N &dst, const E &w) {
 }
 
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::DeleteNode(const N &del) {
+bool gdwg::Graph<N, E>::DeleteNode(const N& del) {
   if (!IsNode(del)) {
     return false;
   }
-  auto &nodeRmv = nodes_.at(del);
+  auto& nodeRmv = nodes_.at(del);
   for (auto edge : nodeRmv->inGoing_) {
     std::shared_ptr<N>& src = edge->src_;
     std::vector<std::shared_ptr<Edge>>& srcEdges = nodes_.at(*src)->outGoing_;
@@ -127,21 +132,21 @@ bool gdwg::Graph<N, E>::DeleteNode(const N &del) {
 }
 
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::Replace(const N &oldData, const N &newData) {
+bool gdwg::Graph<N, E>::Replace(const N& oldData, const N& newData) {
   if (!IsNode(oldData)) {
     throw std::runtime_error("Cannot call Graph::Replace on a node that doesn't exist");
   } else if (IsNode(newData)) {
     return false;
   }
   std::vector<std::tuple<std::shared_ptr<N>, std::shared_ptr<E>>> inGoing, outGoing;
-  auto &node = nodes_.at(oldData);
+  auto& node = nodes_.at(oldData);
   for (auto edge : node->outGoing_) {
-    std::shared_ptr<N> &dst = edge->dst_;
+    std::shared_ptr<N>& dst = edge->dst_;
     std::shared_ptr<E> weight = edge->weight_;
     outGoing.emplace_back(dst, weight);
   }
   for (auto edge : node->inGoing_) {
-    std::shared_ptr<N> &src = edge->src_;
+    std::shared_ptr<N>& src = edge->src_;
     std::shared_ptr<E> weight = edge->weight_;
     inGoing.emplace_back(src, weight);
   }
@@ -165,20 +170,20 @@ bool gdwg::Graph<N, E>::Replace(const N &oldData, const N &newData) {
 }
 
 template <typename N, typename E>
-void gdwg::Graph<N, E>::MergeReplace(const N &oldData, const N &newData) {
+void gdwg::Graph<N, E>::MergeReplace(const N& oldData, const N& newData) {
   if (!IsNode(oldData) || !IsNode(newData)) {
     throw std::runtime_error(
         "Cannot call Graph::MergeReplace on old or new data if they don't exist in the graph");
   }
   std::vector<std::tuple<std::shared_ptr<N>, std::shared_ptr<E>>> inGoing, outGoing;
-  auto &node = nodes_.at(oldData);
+  auto& node = nodes_.at(oldData);
   for (auto edge : node->outGoing_) {
-    std::shared_ptr<N> &dst = edge->dst_;
+    std::shared_ptr<N>& dst = edge->dst_;
     std::shared_ptr<E> weight = edge->weight_;
     outGoing.emplace_back(dst, weight);
   }
   for (auto edge : node->inGoing_) {
-    std::shared_ptr<N> &src = edge->src_;
+    std::shared_ptr<N>& src = edge->src_;
     std::shared_ptr<E> weight = edge->weight_;
     inGoing.emplace_back(src, weight);
   }
@@ -202,18 +207,18 @@ void gdwg::Graph<N, E>::Clear() {
 }
 
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::IsNode(const N &val) {
+bool gdwg::Graph<N, E>::IsNode(const N& val) {
   return nodes_.count(val);
 }
 
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::IsConnected(const N &src, const N &dst) {
+bool gdwg::Graph<N, E>::IsConnected(const N& src, const N& dst) {
   if (!IsNode(src) || !IsNode(dst)) {
     throw std::runtime_error(
         "Cannot call Graph::IsConnected if src or dst node don't exist in the graph");
   }
-  auto &nSrc = nodes_.at(src);
-  auto &nDst = nodes_.at(dst);
+  auto& nSrc = nodes_.at(src);
+  auto& nDst = nodes_.at(dst);
   for (auto& edge : nSrc->outGoing_) {
     if (edge->src_ == nSrc->val_ && edge->dst_ == nDst->val_)
       return true;
@@ -222,7 +227,7 @@ bool gdwg::Graph<N, E>::IsConnected(const N &src, const N &dst) {
 }
 
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::IsConnectedWeight(const N &src, const N &dst, const E &wgt) {
+bool gdwg::Graph<N, E>::IsConnectedWeight(const N& src, const N& dst, const E& wgt) {
   for (auto i : GetWeights(src, dst)) {
     if (i == wgt)
       return true;
@@ -240,15 +245,15 @@ std::vector<N> gdwg::Graph<N, E>::GetNodes() const {
 }
 
 template <typename N, typename E>
-std::vector<N> gdwg::Graph<N, E>::GetConnected(const N &src) {
+std::vector<N> gdwg::Graph<N, E>::GetConnected(const N& src) {
   if (!IsNode(src)) {
     throw std::out_of_range("Cannot call Graph::GetConnected if src doesn't exist in the graph");
   }
-  auto &nSrc = nodes_.at(src);
+  auto& nSrc = nodes_.at(src);
   std::vector<N> vec(nSrc->outGoing_.size());
   int i = 0;
-  for (auto &edge : nSrc->outGoing_) {
-    auto &dsts = *(edge->dst_);
+  for (auto& edge : nSrc->outGoing_) {
+    auto& dsts = *(edge->dst_);
     vec[i] = dsts;
     i++;
   }
@@ -256,15 +261,15 @@ std::vector<N> gdwg::Graph<N, E>::GetConnected(const N &src) {
 }
 
 template <typename N, typename E>
-std::vector<E> gdwg::Graph<N, E>::GetWeights(const N &src, const N &dst) {
+std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
   if (!IsNode(src) || !IsNode(dst)) {
     throw std::out_of_range(
         "Cannot call Graph::GetWeights if src or dst node don't exist in the graph");
   }
   std::vector<E> vec;
-  auto &nSrc = nodes_.at(src);
-  auto &nDst = nodes_.at(dst);
-  for (auto &edge : nSrc->outGoing_) {
+  auto& nSrc = nodes_.at(src);
+  auto& nDst = nodes_.at(dst);
+  for (auto& edge : nSrc->outGoing_) {
     if (edge->src_ == nSrc->val_ && edge->dst_ == nDst->val_) {
       vec.push_back(*edge->weight_);
     }
@@ -273,15 +278,15 @@ std::vector<E> gdwg::Graph<N, E>::GetWeights(const N &src, const N &dst) {
 }
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator
-gdwg::Graph<N, E>::find(const N &src, const N &dst, const E &weight) {
+gdwg::Graph<N, E>::find(const N& src, const N& dst, const E& weight) {
   auto nodeIt = nodes_.find(src);
   auto nodeItEnd = nodes_.cend();
   if (nodeIt == nodeItEnd) {
     return cend();
   }
-  std::vector<std::shared_ptr<Edge>> &edV = nodeIt->second->outGoing_;
+  std::vector<std::shared_ptr<Edge>>& edV = nodeIt->second->outGoing_;
   for (auto it = edV.cbegin(); it != edV.cend(); it++) {
-    const Edge &ed = **it;
+    const Edge& ed = **it;
     if (*ed.dst_ == dst && *ed.weight_ == weight) {
       return const_iterator(nodeIt, nodes_.cbegin(), nodeItEnd, it);
     }
@@ -290,8 +295,8 @@ gdwg::Graph<N, E>::find(const N &src, const N &dst, const E &weight) {
 }
 
 template <typename N, typename E>
-bool gdwg::Graph<N, E>::erase(const N &src, const N &dst, const E &w) {
-  const auto &it = find(src, dst, w);
+bool gdwg::Graph<N, E>::erase(const N& src, const N& dst, const E& w) {
+  const auto& it = find(src, dst, w);
   if (it != cend()) {
     erase(it);
     return true;
@@ -302,15 +307,15 @@ bool gdwg::Graph<N, E>::erase(const N &src, const N &dst, const E &w) {
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::erase(const_iterator it) {
   auto rm = it++;
-  auto &edge = *rm.edge_;
-  auto &src = *rm.node_->second;
+  auto& edge = *rm.edge_;
+  auto& src = *rm.node_->second;
   for (auto iter = src.outGoing_.begin(); iter != src.outGoing_.end(); ++iter) {
     if (*iter == edge) {
       src.outGoing_.erase(iter);
       break;
     }
   }
-  auto &dst = nodes_.at(*edge->dst_);
+  auto& dst = nodes_.at(*edge->dst_);
   for (auto iter = dst->outGoing_.begin(); iter != dst->outGoing_.end(); ++iter) {
     if (*iter == edge) {
       dst->outGoing_.erase(iter);
@@ -337,7 +342,7 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cbegin() {
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cend() {
   typename std::vector<std::shared_ptr<Edge>>::const_iterator itEdge;
-  return const_iterator(nodes_.cend(),nodes_.cbegin(), nodes_.cend(), itEdge);
+  return const_iterator(nodes_.cend(), nodes_.cbegin(), nodes_.cend(), itEdge);
 }
 
 template <typename N, typename E>

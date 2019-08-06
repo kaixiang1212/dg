@@ -10,10 +10,11 @@
   it meets the specification.
 
 */
-#include "assignments/dg/graph.h"
-#include "catch.h"
 #include <string>
 #include <utility>
+
+#include "assignments/dg/graph.h"
+#include "catch.h"
 
 // =============================== Constructors Test ===============================
 
@@ -52,7 +53,7 @@ TEST_CASE("Constructors") {
       REQUIRE(gCopy.IsConnected("a", "b"));
       REQUIRE(gCopy.IsConnected("a", "a"));
     }
-    SECTION("Changes to one wouldn't affect the other"){
+    SECTION("Changes to one wouldn't affect the other") {
       g.DeleteNode("a");
       REQUIRE(gCopy.IsNode("a"));
       REQUIRE(gCopy.IsConnected("a", "b"));
@@ -73,21 +74,19 @@ TEST_CASE("Constructors") {
 }
 
 // =============================== Operations Test ===============================
-TEST_CASE("Copy Assignment"){
+TEST_CASE("Copy Assignment") {
   gdwg::Graph<std::string, int> a;
   a.InsertNode("A");
-  a.InsertEdge("A","A",1);
+  a.InsertEdge("A", "A", 1);
   gdwg::Graph<std::string, int> b;
   b = a;
-  SECTION("They are Equals"){
-    REQUIRE(b == a);
-  }
-  SECTION("Changes to one wouldn't affect the other"){
+  SECTION("They are Equals") { REQUIRE(b == a); }
+  SECTION("Changes to one wouldn't affect the other") {
     b.InsertNode("New");
     REQUIRE(b != a);
   }
-  SECTION("Iterators are the same"){
-    for (const auto& [from, to, weight] : a){
+  SECTION("Iterators are the same") {
+    for (const auto& [from, to, weight] : a) {
       auto i = b.begin();
       const auto& [from_b, to_b, weight_b] = *i;
       REQUIRE(from == from_b);
@@ -98,15 +97,13 @@ TEST_CASE("Copy Assignment"){
   }
 }
 
-TEST_CASE("Move Assignment"){
+TEST_CASE("Move Assignment") {
   gdwg::Graph<std::string, int> a;
   a.InsertNode("A");
-  a.InsertEdge("A","A",1);
+  a.InsertEdge("A", "A", 1);
   gdwg::Graph<std::string, int> b;
   b = std::move(a);
-  SECTION("Moved-from graph is empty"){
-    a.GetNodes().empty();
-  }
+  SECTION("Moved-from graph is empty") { a.GetNodes().empty(); }
 }
 
 // =============================== Methods Test ===============================
@@ -329,7 +326,7 @@ TEST_CASE("Iterators") {
   // Also testing order upon inserting nodes and edges
   SECTION("cbegin") {
     auto it = g.cbegin();
-    const auto & [ from, to, weight ] = *it;
+    const auto& [from, to, weight] = *it;
     REQUIRE(from == 2);
     REQUIRE(to == 3);
     REQUIRE(weight == "Another Edge from 2 to 3");
@@ -352,7 +349,7 @@ TEST_CASE("Iterators") {
   SECTION("end") { REQUIRE(g.cend() == g.end()); }
   SECTION("crbegin") {
     auto it = g.crbegin();
-    const auto & [ from, to, weight ] = *it;
+    const auto& [from, to, weight] = *it;
     REQUIRE(from == 4);
     REQUIRE(to == 4);
     REQUIRE(weight == "Self Edge");
@@ -370,14 +367,14 @@ TEST_CASE("Iterators") {
   SECTION("find") {
     WHEN("self edge") {
       auto it = g.find(4, 4, "Self Edge");
-      const auto & [ from, to, weight ] = *it;
+      const auto& [from, to, weight] = *it;
       REQUIRE(from == 4);
       REQUIRE(to == 4);
       REQUIRE(weight == "Self Edge");
     }
     WHEN("double edge") {
       auto it = g.find(2, 3, "Edge from 2 to 3");
-      const auto & [ from, to, weight ] = *it;
+      const auto& [from, to, weight] = *it;
       REQUIRE(from == 2);
       REQUIRE(to == 3);
       REQUIRE(weight == "Edge from 2 to 3");
@@ -426,7 +423,7 @@ TEST_CASE("Iterators2") {
   SECTION("Move backward") {
     auto i = g.find(1, 1, 4);
     i--;
-    const auto & [ from, to, weight ] = *i;
+    const auto& [from, to, weight] = *i;
     REQUIRE(from == 1);
     REQUIRE(to == 1);
     REQUIRE(weight == 2);
@@ -440,7 +437,7 @@ TEST_CASE("Operator == & !=") {
   g.InsertEdge(1, 1, 4);
   g.InsertEdge(1, 1, 2);
   gdwg::Graph<int, int> gCopy(g);
-  gdwg::Graph<int,int> same{1};
+  gdwg::Graph<int, int> same{1};
   same.InsertEdge(1, 1, 4);
   same.InsertEdge(1, 1, 2);
   SECTION("Equal") { REQUIRE(g == same); }
