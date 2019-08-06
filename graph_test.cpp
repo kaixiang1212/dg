@@ -34,7 +34,6 @@ TEST_CASE("Constructors"){
       REQUIRE(g.IsConnected('a','b'));
       REQUIRE(g.IsConnected('b','c'));
     }
-    // TODO:: Duplicated Edge/Node
   }
 
   SECTION("Initializer List"){
@@ -95,6 +94,23 @@ TEST_CASE("Insert Edge"){
     REQUIRE(g.InsertEdge('a','b',1));
     REQUIRE(!g.InsertEdge('a','b',1));
   }
+  SECTION("Either Node doesnt exist throws exception"){
+    REQUIRE_THROWS_AS(g.InsertEdge('a','z',1), std::runtime_error);
+    REQUIRE_THROWS_AS(g.InsertEdge('z','a',1), std::runtime_error);
+  }
+}
+
+TEST_CASE("Delete Node"){
+  std::vector<int> vec{1,2,3,4};
+  gdwg::Graph<int, int> g(vec.begin(),vec.end());
+  SECTION("Delete node that doesnt exist"){
+    REQUIRE(!g.DeleteNode(6));
+  }
+  SECTION("Delete Node with edges connected to it"){
+    g.InsertEdge(1,2,1);
+    REQUIRE(g.DeleteNode(1));
+    REQUIRE(g.GetConnected(2).empty());
+  }
 }
 
 TEST_CASE("Replace"){
@@ -112,7 +128,7 @@ TEST_CASE("Replace"){
     REQUIRE(g.Replace('a','e'));
     REQUIRE(g.IsNode('e'));
   }
-  SECTION("A node doesn't exist"){
+  SECTION("Replace a node that doesn't exist throws exception"){
     REQUIRE_THROWS_AS(g.Replace('e','z'), std::runtime_error);
   }
   SECTION("New node already exist"){
@@ -138,7 +154,7 @@ TEST_CASE("MergeReplace"){
     std::vector<char> incoming = g.GetConnected('b');
     REQUIRE(incoming.size() == 3);
   }
-  SECTION("Either Node doesn't exist"){
+  SECTION("Either Node doesn't exist throws exception"){
     REQUIRE_THROWS_AS(g.MergeReplace('z','b'), std::runtime_error);
     REQUIRE_THROWS_AS(g.MergeReplace('a','z'), std::runtime_error);
   }
@@ -150,6 +166,69 @@ TEST_CASE("Clear"){
   SECTION("Remove all nodes"){
     REQUIRE(g.GetNodes().size() == 4);
     g.Clear();
-    REQUIRE(g.GetNodes().size() == 0);
+    REQUIRE(g.GetNodes().empty());
   }
 }
+
+TEST_CASE("IsConnected"){
+  gdwg::Graph<int, int> g{1, 2,3, 4};
+  SECTION("If either node doesnt exist throws exception"){
+    REQUIRE_THROWS_AS(g.IsConnected(5,6), std::runtime_error);
+  }
+}
+
+TEST_CASE("GetNodes"){
+  gdwg::Graph<int, int> g;
+  g.InsertNode(3);
+  g.InsertNode(1);
+  g.InsertNode(4);
+  g.InsertNode(2);
+  SECTION("Increasing Order of Node"){
+    std::vector<int> vec = g.GetNodes();
+    REQUIRE(vec[0] == 1);
+    REQUIRE(vec[1] == 2);
+    REQUIRE(vec[2] == 3);
+    REQUIRE(vec[3] == 4);
+  }
+}
+
+TEST_CASE("GetConnected"){
+  gdwg::Graph<int, int> g{1,2,3,4};
+  g.InsertEdge(1,4,1);
+  g.InsertEdge(1,1,1);
+  g.InsertEdge(1,3,1);
+  g.InsertEdge(1,2,1);
+  SECTION("Sorted by increasing order of node"){
+    std::vector<int> vec = g.GetConnected(1);
+      REQUIRE(vec[0] == 1);
+      REQUIRE(vec[1] == 2);
+      REQUIRE(vec[2] == 3);
+      REQUIRE(vec[3] == 4);
+  }
+  SECTION("Node not exist throws exception"){
+    REQUIRE_THROWS_AS(g.GetConnected(6), std::out_of_range);
+  }
+}
+
+TEST_CASE("GetWeights"){
+  gdwg::Graph<int, int> g{1};
+  g.InsertEdge(1,1,4);
+  g.InsertEdge(1,1,2);
+  g.InsertEdge(1,1,3);
+  g.InsertEdge(1,1,1);
+  SECTION("Sorted by increasing order of weight (edge)"){
+    std::vector<int> vec = g.GetWeights(1,1);
+    REQUIRE(vec[0] == 1);
+    REQUIRE(vec[1] == 2);
+    REQUIRE(vec[2] == 3);
+    REQUIRE(vec[3] == 4);
+  }
+  SECTION("Either node not exist throws exception"){
+    REQUIRE_THROWS_AS(g.GetWeights(6,1), std::out_of_range);
+    REQUIRE_THROWS_AS(g.GetWeights(1,6), std::out_of_range);
+  }
+}
+
+// TODO : Iterators
+
+// TODO : Operators == !=
