@@ -281,7 +281,7 @@ gdwg::Graph<N, E>::find(const N &src, const N &dst, const E &weight) {
   for (auto it = edV.cbegin(); it != edV.cend(); it++) {
     const Edge &ed = **it;
     if (*ed.dst_ == dst && *ed.weight_ == weight) {
-      return const_iterator(nodeIt, nodeItEnd, it);
+      return const_iterator(nodeIt, nodes_.cbegin(), nodeItEnd, it);
     }
   }
   return cend();
@@ -329,13 +329,13 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cbegin() {
   if (itBeg != itEnd) {
     itEdge = itBeg->second->outGoing_.cbegin();
   }
-  return const_iterator(itBeg, itEnd, itEdge);
+  return const_iterator(itBeg, itBeg, itEnd, itEdge);
 }
 
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::cend() {
   typename std::vector<std::shared_ptr<Edge>>::const_iterator itEdge;
-  return const_iterator(nodes_.cend(), nodes_.cend(), itEdge);
+  return const_iterator(nodes_.cend(),nodes_.cbegin(), nodes_.cend(), itEdge);
 }
 
 template <typename N, typename E>
@@ -349,13 +349,13 @@ typename gdwg::Graph<N, E>::const_reverse_iterator gdwg::Graph<N, E>::crbegin() 
   if (itBeg != itEnd) {
     itEdge = itBeg->second->outGoing_.crbegin();
   }
-  return const_reverse_iterator(itBeg, itEnd, itEdge);
+  return const_reverse_iterator(itBeg, itBeg, itEnd, itEdge);
 }
 
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_reverse_iterator gdwg::Graph<N, E>::crend() {
   typename std::vector<std::shared_ptr<Edge>>::const_reverse_iterator itEdge;
-  return const_reverse_iterator(nodes_.crend(), nodes_.crend(), itEdge);
+  return const_reverse_iterator(nodes_.crend(), nodes_.crbegin(), nodes_.crend(), itEdge);
 }
 
 template <typename N, typename E>

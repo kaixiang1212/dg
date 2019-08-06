@@ -292,7 +292,7 @@ TEST_CASE("Erase edge given iterator"){
   }
 }
 
-TEST_CASE("Iterators"){
+TEST_CASE("Iterators2"){
   gdwg::Graph<int, int> g{1};
   g.InsertEdge(1,1,4);
   g.InsertEdge(1,1,2);
@@ -310,7 +310,11 @@ TEST_CASE("Iterators"){
     // TODO:
     auto i = g.find(1,1,4);
     i--;
-    REQUIRE(i == g.find(1,1,2));
+    const auto& [from, to, weight] = *i;
+    REQUIRE(from == 1);
+    REQUIRE(to == 1);
+    REQUIRE(weight == 2);
+    //REQUIRE(i == g.find(1,1,2));
   }
 }
 

@@ -157,9 +157,9 @@ template <typename N, typename E> class Graph {
       if (edge_ == node_->second->outGoing_.end()) {
         do {
           ++node_;
-        } while (node_ != sentinel_ &&
+        } while (node_ != endSentinel_ &&
                  node_->second->outGoing_.begin() == node_->second->outGoing_.end());
-        if (node_ != sentinel_) {
+        if (node_ != endSentinel_) {
           edge_ = node_->second->outGoing_.begin();
         }
       }
@@ -177,9 +177,9 @@ template <typename N, typename E> class Graph {
       if (edge_ == node_->second->outGoing_.begin()) {
         do {
           --node_;
-        } while (node_ != sentinel_ &&
+        } while (node_ != fntSentinel_ &&
                  node_->second->outGoing_.begin() == node_->second->outGoing_.end());
-        if (node_ != sentinel_) {
+        if (node_ != fntSentinel_) {
           edge_ = node_->second->outGoing_.end();
         }
       }
@@ -193,7 +193,7 @@ template <typename N, typename E> class Graph {
     }
 
     friend bool operator==(const const_iterator &lhs, const const_iterator &rhs) {
-      return lhs.node_ == rhs.node_ && (lhs.node_ == lhs.sentinel_ || lhs.edge_ == rhs.edge_);
+      return lhs.node_ == rhs.node_ && (lhs.node_ == lhs.endSentinel_ || lhs.edge_ == rhs.edge_);
     }
 
     friend bool operator!=(const const_iterator &lhs, const const_iterator &rhs) {
@@ -202,12 +202,14 @@ template <typename N, typename E> class Graph {
 
    private:
     typename std::map<N, std::shared_ptr<Node>>::const_iterator node_;
-    typename std::map<N, std::shared_ptr<Node>>::const_iterator sentinel_;
+    typename std::map<N, std::shared_ptr<Node>>::const_iterator fntSentinel_;
+    typename std::map<N, std::shared_ptr<Node>>::const_iterator endSentinel_;
     typename std::vector<std::shared_ptr<Edge>>::const_iterator edge_;
     const_iterator(const decltype(node_) &node,
-                   const decltype(sentinel_) &sentinel,
-                   const decltype(edge_) &edge)
-      : node_{node}, sentinel_{sentinel}, edge_{edge} {};
+                           const decltype(fntSentinel_) &fntSentinel,
+                           const decltype(endSentinel_) &endSentinel,
+                           const decltype(edge_) &edge)
+        : node_{node}, fntSentinel_{fntSentinel}, endSentinel_{endSentinel}, edge_{edge} {};
 
     friend class Graph;
   };
@@ -228,9 +230,9 @@ template <typename N, typename E> class Graph {
       if (edge_ == node_->second->outGoing_.rend()) {
         do {
           ++node_;
-        } while (node_ != sentinel_ &&
+        } while (node_ != endSentinel_ &&
                  node_->second->outGoing_.rbegin() == node_->second->outGoing_.rend());
-        if (node_ != sentinel_) {
+        if (node_ != endSentinel_) {
           edge_ = node_->second->outGoing_.rbegin();
         }
       }
@@ -248,9 +250,9 @@ template <typename N, typename E> class Graph {
       if (edge_ == node_->second->outGoing_.rbegin()) {
         do {
           --node_;
-        } while (node_ != sentinel_ &&
+        } while (node_ != fntSentinel_ &&
                  node_->second->outGoing_.rbegin() == node_->second->outGoing_.rend());
-        if (node_ != sentinel_) {
+        if (node_ != fntSentinel_) {
           edge_ = node_->second->outGoing_.rend();
         }
       }
@@ -264,7 +266,7 @@ template <typename N, typename E> class Graph {
     }
 
     friend bool operator==(const const_reverse_iterator &lhs, const const_reverse_iterator &rhs) {
-      return lhs.node_ == rhs.node_ && (lhs.node_ == lhs.sentinel_ || lhs.edge_ == rhs.edge_);
+      return lhs.node_ == rhs.node_ && (lhs.node_ == lhs.endSentinel_ || lhs.edge_ == rhs.edge_);
     }
 
     friend bool operator!=(const const_reverse_iterator &lhs, const const_reverse_iterator &rhs) {
@@ -273,12 +275,14 @@ template <typename N, typename E> class Graph {
 
    private:
     typename std::map<N, std::shared_ptr<Node>>::const_reverse_iterator node_;
-    typename std::map<N, std::shared_ptr<Node>>::const_reverse_iterator sentinel_;
+    typename std::map<N, std::shared_ptr<Node>>::const_reverse_iterator fntSentinel_;
+    typename std::map<N, std::shared_ptr<Node>>::const_reverse_iterator endSentinel_;
     typename std::vector<std::shared_ptr<Edge>>::const_reverse_iterator edge_;
     const_reverse_iterator(const decltype(node_) &node,
-                           const decltype(sentinel_) &sentinel,
+                           const decltype(fntSentinel_) &fntSentinel,
+                           const decltype(endSentinel_) &endSentinel,
                            const decltype(edge_) &edge)
-      : node_{node}, sentinel_{sentinel}, edge_{edge} {};
+      : node_{node}, fntSentinel_{fntSentinel}, endSentinel_{endSentinel}, edge_{edge} {};
 
     friend class Graph;
   };
