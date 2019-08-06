@@ -217,8 +217,8 @@ public:
                    const decltype(fntSentinel_) &fntSentinel,
                    const decltype(endSentinel_) &endSentinel,
                    const decltype(edge_) &edge)
-    : node_{node}, fntSentinel_{fntSentinel},
-      endSentinel_{endSentinel}, edge_{edge} {};
+        : node_{node}, fntSentinel_{fntSentinel},
+          endSentinel_{endSentinel}, edge_{edge} {};
 
     friend class Graph;
   };
@@ -296,14 +296,14 @@ public:
                            const decltype(fntSentinel_) &fntSentinel,
                            const decltype(endSentinel_) &endSentinel,
                            const decltype(edge_) &edge)
-      : node_{node}, fntSentinel_{fntSentinel},
-        endSentinel_{endSentinel}, edge_{edge} {};
+        : node_{node}, fntSentinel_{fntSentinel},
+          endSentinel_{endSentinel}, edge_{edge} {};
 
     friend class Graph;
   };
 };
 
-} // namespace gdwg
+}  // namespace gdwg
 
 #include "assignments/dg/graph.tpp"
 
