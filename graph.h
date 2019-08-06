@@ -48,10 +48,10 @@ class Graph {
     std::vector<E> GetWeights(const N& src, const N& dst);
 
     const_iterator find(const N&, const N&, const E&);
-    /*
+
     bool erase(const N& src, const N& dst, const E& w);
     const_iterator erase(const_iterator it);
-    */
+
     const_iterator cbegin();
     const_iterator cend();
     const_reverse_iterator crbegin();

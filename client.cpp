@@ -62,11 +62,12 @@ int main() {
     std::cout << from << " -> " << to << " (weight " << weight << ")\n";
   }*/
 
-
-
+  std::cout << "-----------\n";
+  g.erase("how", "you?", 1);
 
   for (gdwg::Graph<std::string,int>::const_reverse_iterator it = g.rbegin(); it != g.rend(); it++) {
     const auto& [from, to, weight] = *it;
     std::cout << from << " -> " << to << " (weight " << weight << ")\n";
   }
+
 }

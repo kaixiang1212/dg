@@ -269,10 +269,13 @@ std::vector<E> gdwg::Graph<N,E>::GetWeights(const N& src, const N& dst){
 template<typename N, typename E>
 typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::find(const N& src, const N& dst, const E& weight){
   auto nodeIt = nodes_.find(src);
-  auto nodeItEnd = nodes_.end();
+  auto nodeItEnd = nodes_.cend();
+  if(nodeIt == nodeItEnd) {
+    return cend();
+  }
   std::vector<std::shared_ptr<Edge>>& edV = nodeIt->second->outGoing_;
-  for(auto it = edV.begin(); it != edV.end(); it++) {
-    Edge& ed = **it;
+  for(auto it = edV.cbegin(); it != edV.cend(); it++) {
+    const Edge& ed = **it;
     if(*ed.dst_ == dst && *ed.weight_ == weight) {
       return const_iterator(nodeIt, nodeItEnd, it);
     }
@@ -280,13 +283,38 @@ typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::find(const N& src, c
   return cend();
 }
 
-/*
-template<typename N, typename E>
-bool gdwg::Graph<N,E>::erase(const N& src, const N& dst, const E& w){}
 
 template<typename N, typename E>
-const_iterator gdwg::Graph<N,E>::erase(const_iterator it){}
-*/
+bool gdwg::Graph<N,E>::erase(const N& src, const N& dst, const E& w){
+  const auto& it = find(src, dst, w);
+  if(it != cend()) {
+    erase(it);
+    return true;
+  }
+  return false;
+}
+
+template<typename N, typename E>
+typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::erase(const_iterator it){
+  auto rm = it;
+  auto& edge = *rm.edge_;
+  auto& src = *rm.node_->second;
+  for( auto iter = src.outGoing_.begin(); iter != src.outGoing_.end(); ++iter ) {
+    if( *iter == edge ) {
+      src.outGoing_.erase(iter);
+      break;
+    }
+  }
+  auto& dst = nodes_.at(*edge->dst_);
+  for( auto iter = dst->outGoing_.begin(); iter != dst->outGoing_.end(); ++iter ) {
+    if( *iter == edge ) {
+      dst->outGoing_.erase(iter);
+      break;
+    }
+  }
+  return ++it;
+}
+
 template<typename N, typename E>
 typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::cbegin(){
   auto itBeg = nodes_.cbegin();
@@ -297,7 +325,6 @@ typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::cbegin(){
   }
   if(itBeg != itEnd) {
     itEdge = itBeg->second->outGoing_.cbegin();
-    return const_iterator(itBeg, itEnd, itBeg->second->outGoing_.cbegin());
   }
   return const_iterator(itBeg, itEnd, itEdge);
 }
