@@ -277,8 +277,8 @@ TEST_CASE("Erase edge given iterator"){
   SECTION("Erasing the only element returns cend?"){
     // TODO:
     auto i = g.find(1,1,4);
-    REQUIRE(g.begin() == g.end());
-    REQUIRE(g.end() == g.erase(i));
+    REQUIRE(g.begin() == i);
+    REQUIRE(g.erase(i) == g.cend());
   }
   SECTION("Erasing all edge via loop"){
     g.InsertEdge(1,2,2);
@@ -410,8 +410,7 @@ TEST_CASE("Iterators") {
   }
   SECTION("Erase Iterator"){
     auto it = g.find(2,3, "Another Edge from 2 to 3");
-    auto rtn = g.erase(it);
-    REQUIRE(rtn == ++it);
+    g.erase(it);
     gdwg::Graph<int, std::string> g2{4,3,2};
     g2.InsertEdge(4,4, "Self Edge");
     g2.InsertEdge(2,3, "Edge from 2 to 3");

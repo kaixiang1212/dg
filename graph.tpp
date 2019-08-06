@@ -1,3 +1,4 @@
+#include "assignments/dg/graph.h"
 // ---------------------- Constructors ----------------------
 template <typename N, typename E> gdwg::Graph<N, E>::Graph() = default;
 
@@ -299,7 +300,7 @@ bool gdwg::Graph<N, E>::erase(const N &src, const N &dst, const E &w) {
 
 template <typename N, typename E>
 typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::erase(const_iterator it) {
-  auto rm = it;
+  auto rm = it++;
   auto &edge = *rm.edge_;
   auto &src = *rm.node_->second;
   for (auto iter = src.outGoing_.begin(); iter != src.outGoing_.end(); ++iter) {
@@ -315,7 +316,7 @@ typename gdwg::Graph<N, E>::const_iterator gdwg::Graph<N, E>::erase(const_iterat
       break;
     }
   }
-  return ++it;
+  return it;
 }
 
 template <typename N, typename E>
