@@ -204,9 +204,9 @@ class Graph {
     }
 
    private:
-    typename std::map<N, std::shared_ptr<Node>>::iterator node_;
-    typename std::map<N, std::shared_ptr<Node>>::iterator sentinel_;
-    typename std::vector<std::shared_ptr<Edge>>::iterator edge_;
+    typename std::map<N, std::shared_ptr<Node>>::const_iterator node_;
+    typename std::map<N, std::shared_ptr<Node>>::const_iterator sentinel_;
+    typename std::vector<std::shared_ptr<Edge>>::const_iterator edge_;
     const_iterator(const decltype(node_)& node, const decltype(sentinel_)& sentinel,
                    const decltype(edge_)& edge): node_{node}, sentinel_{sentinel}, edge_{edge} {};
 
@@ -227,7 +227,6 @@ class Graph {
     };
 
     const const_reverse_iterator& operator++() {
-      /*
       ++edge_;
       if(edge_ == node_->second->outGoing_.rend()) {
         do {
@@ -238,7 +237,6 @@ class Graph {
         }
       }
       return *this;
-       */
     }
 
     const const_reverse_iterator operator++(int) {
@@ -248,7 +246,6 @@ class Graph {
     };
 
     const_reverse_iterator& operator--() {
-      /*
       --edge_;
       if(edge_ == node_->second->outGoing_.rbegin()) {
         do {
@@ -257,7 +254,7 @@ class Graph {
         if (node_ != sentinel_) {
           edge_ = node_->second->outGoing_.rend();
         }
-      }*/
+      }
       return *this;
     };
 
@@ -277,9 +274,9 @@ class Graph {
     }
 
    private:
-    typename std::map<N, std::shared_ptr<Node>>::reverse_iterator node_;
-    typename std::map<N, std::shared_ptr<Node>>::reverse_iterator sentinel_;
-    typename std::vector<std::shared_ptr<Edge>>::reverse_iterator edge_;
+    typename std::map<N, std::shared_ptr<Node>>::const_reverse_iterator node_;
+    typename std::map<N, std::shared_ptr<Node>>::const_reverse_iterator sentinel_;
+    typename std::vector<std::shared_ptr<Edge>>::const_reverse_iterator edge_;
     const_reverse_iterator(const decltype(node_)& node, const decltype(sentinel_)& sentinel,
                    const decltype(edge_)& edge): node_{node}, sentinel_{sentinel}, edge_{edge} {};
 
