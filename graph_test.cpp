@@ -229,6 +229,106 @@ TEST_CASE("GetWeights"){
   }
 }
 
-// TODO : Iterators
+// Also testing weight as strings and node value as ints
+// And node not attached to others
+// 4 has edge to itself
+// 2 -> 3 has two edges and 3 -> 2 has one
+TEST_CASE("Iterators") {
+  gdwg::Graph<int, std::string> g{4,3,2};
+  g.InsertEdge(4,4, "Self Edge");
+  g.InsertEdge(2,3, "Edge from 2 to 3");
+  g.InsertEdge(2,3, "Another Edge from 2 to 3");
+  g.InsertEdge(3,2, "Backwards Edge now from 3 to 2");
+  // Also testing order upon inserting nodes and edges
+  SECTION("cbegin") {
+    auto it = g.cbegin();
+    const auto& [from, to, weight] = *it;
+    REQUIRE(from == 2);
+    REQUIRE(to == 3);
+    REQUIRE(weight == "Another Edge from 2 to 3");
+    WHEN("Testing equality") {
+      REQUIRE(it == it);
+      REQUIRE(!(it != it));
+    }
+  }
+  SECTION("begin") {
+    REQUIRE(g.cbegin() == g.begin());
+  }
+  // Also testing incrementing
+  SECTION("cend") {
+    REQUIRE(g.cbegin() != g.cend());
+    auto it = g.cbegin();
+    it++;
+    it++;
+    it++;
+    it++;
+    REQUIRE(it == g.cend());
+  }
+  SECTION("end") {
+    REQUIRE(g.cend() == g.end());
+  }
+  SECTION("crbegin") {
+    auto it = g.crbegin();
+    const auto& [from, to, weight] = *it;
+    REQUIRE(from == 4);
+    REQUIRE(to == 4);
+    REQUIRE(weight == "Self Edge");
+  }
+  SECTION("rbegin") {
+    REQUIRE(g.crbegin() == g.rbegin());
+  }
+  SECTION("crend") {
+    auto it = g.crbegin();
+    it++;
+    it++;
+    it++;
+    it++;
+    REQUIRE(it == g.crend());
+  }
+  SECTION("rend") {
+    REQUIRE(g.crend() == g.rend());
+  }
+  SECTION("find") {
+    WHEN("self edge") {
+      auto it = g.find(4,4, "Self Edge");
+      const auto& [from, to, weight] = *it;
+      REQUIRE(from == 4);
+      REQUIRE(to == 4);
+      REQUIRE(weight == "Self Edge");
+    }
+    WHEN("double edge") {
+      auto it = g.find(2,3, "Edge from 2 to 3");
+      const auto& [from, to, weight] = *it;
+      REQUIRE(from == 2);
+      REQUIRE(to == 3);
+      REQUIRE(weight == "Edge from 2 to 3");
+    }
+    WHEN("Doesn't exist") {
+      auto it = g.find(3,2, "Me Not In Graph");
+      REQUIRE(it == g.cend());
+    }
+  }
+  SECTION("Erase Values"){
+    bool rtn = g.erase(2,3, "Another Edge from 2 to 3");
+    REQUIRE(rtn == 1);
+    gdwg::Graph<int, std::string> g2{4,3,2};
+    g2.InsertEdge(4,4, "Self Edge");
+    g2.InsertEdge(2,3, "Edge from 2 to 3");
+    g2.InsertEdge(3,2, "Backwards Edge now from 3 to 2");
+    REQUIRE(g == g2);
+    rtn = g.erase(2,3, "Another Edge from 2 to 3");
+    REQUIRE(rtn == 0);
+  }
+  SECTION("Erase Iterator"){
+    auto it = g.find(2,3, "Another Edge from 2 to 3");
+    auto rtn = g.erase(it);
+    REQUIRE(rtn == ++it);
+    gdwg::Graph<int, std::string> g2{4,3,2};
+    g2.InsertEdge(4,4, "Self Edge");
+    g2.InsertEdge(2,3, "Edge from 2 to 3");
+    g2.InsertEdge(3,2, "Backwards Edge now from 3 to 2");
+    REQUIRE(g == g2);
+  }
+}
 
 // TODO : Operators == !=
