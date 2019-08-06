@@ -141,7 +141,8 @@ bool gdwg::Graph<N, E>::Replace(const N &oldData, const N &newData) {
   } else if (IsNode(newData)) {
     return false;
   }
-  std::vector<std::tuple<std::shared_ptr<N>, std::shared_ptr<E>>> inGoing, outGoing;
+  std::vector<std::tuple<std::shared_ptr<N>, std::shared_ptr<E>>> inGoing,
+      outGoing;
   auto &node = nodes_.at(oldData);
   for (auto edge : node->outGoing_) {
     std::shared_ptr<N> &dst = edge->dst_;
@@ -175,9 +176,8 @@ bool gdwg::Graph<N, E>::Replace(const N &oldData, const N &newData) {
 template <typename N, typename E>
 void gdwg::Graph<N, E>::MergeReplace(const N &oldData, const N &newData) {
   if (!IsNode(oldData) || !IsNode(newData)) {
-    throw std::runtime_error(
-        "Cannot call Graph::MergeReplace on old or new "
-        "data if they don't exist in the graph");
+    throw std::runtime_error("Cannot call Graph::MergeReplace on old or new "
+                             "data if they don't exist in the graph");
   }
   std::vector<std::tuple<std::shared_ptr<N>, std::shared_ptr<E>>> inGoing,
       outGoing;
@@ -217,9 +217,8 @@ template <typename N, typename E> bool gdwg::Graph<N, E>::IsNode(const N &val) {
 template <typename N, typename E>
 bool gdwg::Graph<N, E>::IsConnected(const N &src, const N &dst) {
   if (!IsNode(src) || !IsNode(dst)) {
-    throw std::runtime_error(
-        "Cannot call Graph::IsConnected if src or dst "
-        "node don't exist in the graph");
+    throw std::runtime_error("Cannot call Graph::IsConnected if src or dst "
+                             "node don't exist in the graph");
   }
   auto &nSrc = nodes_.at(src);
   auto &nDst = nodes_.at(dst);
@@ -267,7 +266,7 @@ std::vector<N> gdwg::Graph<N, E>::GetConnected(const N &src) {
 }
 
 template <typename N, typename E>
-std::vector<E> gdwg::Graph<N, E>::GetWeights(const N& src, const N& dst) {
+std::vector<E> gdwg::Graph<N, E>::GetWeights(const N &src, const N &dst) {
   if (!IsNode(src) || !IsNode(dst)) {
     throw std::out_of_range("Cannot call Graph::GetWeights if src or dst node "
                             "don't exist in the graph");

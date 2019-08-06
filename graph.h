@@ -17,8 +17,10 @@ public:
   // ---------------------- Constructors ----------------------
 
   Graph<N, E>();
-  Graph<N, E>(typename std::vector<N>::const_iterator, typename std::vector<N>::const_iterator);
-  Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator, typename std::vector<std::tuple<N, N, E>>::const_iterator);
+  Graph<N, E>(typename std::vector<N>::const_iterator,
+              typename std::vector<N>::const_iterator);
+  Graph<N, E>(typename std::vector<std::tuple<N, N, E>>::const_iterator,
+              typename std::vector<std::tuple<N, N, E>>::const_iterator);
   Graph<N, E>(std::initializer_list<N>);
   Graph<N, E>(const gdwg::Graph<N, E> &) noexcept;
   Graph<N, E>(gdwg::Graph<N, E> &&) noexcept;
@@ -26,8 +28,8 @@ public:
   ~Graph<N, E>();
   // ---------------------- Operations ----------------------
 
-  Graph<N, E>& operator=(const Graph &);
-  Graph<N, E>& operator=(Graph &&) noexcept;
+  Graph<N, E> &operator=(const Graph &);
+  Graph<N, E> &operator=(Graph &&) noexcept;
 
   // ---------------------- Methods ----------------------
   bool InsertNode(const N &val);
@@ -60,10 +62,12 @@ public:
   const_reverse_iterator rend();
 
   // ---------------------- Friends ----------------------
-  friend bool operator==(const gdwg::Graph<N, E> &g1, const gdwg::Graph<N, E> &g2) {
+  friend bool operator==(const gdwg::Graph<N, E> &g1,
+                         const gdwg::Graph<N, E> &g2) {
     return !(g1 != g2);
   }
-  friend bool operator!=(const gdwg::Graph<N, E> &g1, const gdwg::Graph<N, E> &g2) {
+  friend bool operator!=(const gdwg::Graph<N, E> &g1,
+                         const gdwg::Graph<N, E> &g2) {
     auto g1Nodes = g1.GetNodes();
     auto g2Nodes = g2.GetNodes();
     if (g1Nodes.size() != g2Nodes.size()) {
@@ -77,7 +81,8 @@ public:
     return false;
   }
 
-  friend std::ostream& operator<<(std::ostream &os, const gdwg::Graph<N, E> &g) {
+  friend std::ostream &operator<<(std::ostream &os,
+                                  const gdwg::Graph<N, E> &g) {
     for (auto it = g.nodes_.begin(); it != g.nodes_.end(); ++it) {
       auto curNode = it->second;
       os << *curNode->val_ << " (\n";
@@ -112,13 +117,15 @@ private:
     std::shared_ptr<N> src_;
     std::shared_ptr<N> dst_;
     std::shared_ptr<E> weight_;
-    Edge(std::shared_ptr<N> src, std::shared_ptr<N> dst, std::shared_ptr<E> weight) {
+    Edge(std::shared_ptr<N> src, std::shared_ptr<N> dst,
+         std::shared_ptr<E> weight) {
       src_ = src;
       dst_ = dst;
       weight_ = weight;
     }
     friend bool operator==(const Edge &lhs, const Edge &rhs) {
-      if (*lhs.dst_ != *rhs.dst_ || *lhs.src != *rhs.src_ || lhs.weight_ != rhs.weight_) {
+      if (*lhs.dst_ != *rhs.dst_ || *lhs.src != *rhs.src_ ||
+          lhs.weight_ != rhs.weight_) {
         return false;
       }
       return true;
@@ -141,7 +148,7 @@ private:
 
 public:
   class const_iterator {
-   public:
+  public:
     using iterator_category = std::bidirectional_iterator_tag;
     using value_type = std::tuple<N, N, E>;
     using reference = std::tuple<const N &, const N &, const E &>;
@@ -156,7 +163,7 @@ public:
         do {
           ++node_;
         } while (node_ != endSentinel_ && node_->second->outGoing_.begin() ==
-                                                         node_->second->outGoing_.end());
+                                              node_->second->outGoing_.end());
         if (node_ != endSentinel_) {
           edge_ = node_->second->outGoing_.begin();
         }
@@ -176,7 +183,7 @@ public:
         do {
           --node_;
         } while (node_ != fntSentinel_ && node_->second->outGoing_.begin() ==
-                                                         node_->second->outGoing_.end());
+                                              node_->second->outGoing_.end());
         if (node_ != fntSentinel_) {
           edge_ = node_->second->outGoing_.end();
         }
@@ -210,8 +217,8 @@ public:
                    const decltype(fntSentinel_) &fntSentinel,
                    const decltype(endSentinel_) &endSentinel,
                    const decltype(edge_) &edge)
-      : node_{node}, fntSentinel_{fntSentinel},
-        endSentinel_{endSentinel}, edge_{edge} {};
+    : node_{node}, fntSentinel_{fntSentinel},
+      endSentinel_{endSentinel}, edge_{edge} {};
 
     friend class Graph;
   };
