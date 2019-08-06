@@ -2,9 +2,12 @@
 
   == Explanation and rational of testing ==
 
-  Explain and justify how you approached testing, the degree
-   to which you're certain you have covered all possibilities,
-   and why you think your tests are that thorough.
+  We have covered most possible valid and invalid uses of functions such that every
+  possible errors are handled and the program behave the way it should. We used test cases
+  and sections so that when the test case failed, it is immediately obvious what went wrong.
+  We also considered making our tests as less brittle as possible so that the tests are not
+  specific to our implementation, it could be tested with other implementations as long as
+  it meets the specification.
 
 */
 #include "assignments/dg/graph.h"
