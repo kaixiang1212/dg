@@ -12,52 +12,51 @@
 #include "catch.h"
 
 
-TEST_CASE("Constructors"){
-
-  SECTION("Iterator Constructor"){
-    std::vector<char> vec{'a','b','c','d'};
-    gdwg::Graph<char, int> g(vec.begin(),vec.end());
+TEST_CASE("Constructors") {
+  SECTION("Iterator Constructor") {
+    std::vector<char> vec{'a', 'b', 'c', 'd'};
+    gdwg::Graph<char, int> g(vec.begin(), vec.end());
     SECTION("Nodes are constructed") {
       REQUIRE(g.GetNodes().size() == vec.size());
     }
   }
 
-  SECTION("Tuple Constructor"){
+  SECTION("Tuple Constructor") {
     auto e1 = std::make_tuple('a', 'b', 5);
     auto e2 = std::make_tuple('b', 'c', 7);
     auto e = std::vector<std::tuple<char,char, int>>{e1, e2};
     gdwg::Graph<char, int> g{e.begin(), e.end()};
-    SECTION("Nodes are constructed"){
+    SECTION("Nodes are constructed") {
       REQUIRE(g.GetNodes().size() == 3);
     }
-    SECTION("Edges are constructed"){
+    SECTION("Edges are constructed") {
       REQUIRE(g.IsConnected('a','b'));
       REQUIRE(g.IsConnected('b','c'));
     }
   }
 
-  SECTION("Initializer List"){
+  SECTION("Initializer List") {
     gdwg::Graph<char, std::string> g{'a', 'b', 'x', 'y'};
-    SECTION("Nodes are constructed"){
+    SECTION("Nodes are constructed") {
       REQUIRE(g.GetNodes().size() == 4);
     }
   }
 
-  SECTION("Copy Constructor"){
+  SECTION("Copy Constructor") {
     gdwg::Graph<std::string, int> g;
     g.InsertNode("a");
     g.InsertNode("b");
-    g.InsertEdge("a","b", 1);
-    g.InsertEdge("a","a", 1);
+    g.InsertEdge("a", "b", 1);
+    g.InsertEdge("a", "a", 1);
     gdwg::Graph<std::string, int> gCopy{g};
     SECTION("Edges are copied"){
-      REQUIRE(gCopy.IsConnected("a","b"));
-      REQUIRE(gCopy.IsConnected("a","a"));
+      REQUIRE(gCopy.IsConnected("a", "b"));
+      REQUIRE(gCopy.IsConnected("a", "a"));
     }
-    SECTION("Any change to original"){
+    SECTION("Any change to original") {
       g.DeleteNode("a");
       REQUIRE(gCopy.IsNode("a"));
-      REQUIRE(gCopy.IsConnected("a","b"));
+      REQUIRE(gCopy.IsConnected("a", "b"));
     }
   }
 
