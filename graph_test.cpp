@@ -23,9 +23,7 @@ TEST_CASE("Constructors") {
   SECTION("Iterator Constructor") {
     std::vector<char> vec{'a', 'b', 'c', 'd'};
     gdwg::Graph<char, int> g(vec.begin(), vec.end());
-    SECTION("Nodes are constructed") {
-      REQUIRE(g.GetNodes().size() == vec.size());
-    }
+    SECTION("Nodes are constructed") { REQUIRE(g.GetNodes().size() == vec.size()); }
   }
 
   SECTION("Tuple Constructor") {
@@ -89,9 +87,9 @@ TEST_CASE("Copy Assignment") {
     REQUIRE(b != a);
   }
   SECTION("Iterators are the same") {
-    for (const auto &[from, to, weight] : a) {
+    for (const auto& [from, to, weight] : a) {
       auto i = b.begin();
-      const auto &[from_b, to_b, weight_b] = *i;
+      const auto& [from_b, to_b, weight_b] = *i;
       REQUIRE(from == from_b);
       REQUIRE(to == to_b);
       REQUIRE(weight == weight_b);
@@ -270,9 +268,7 @@ TEST_CASE("Find iterator") {
     REQUIRE(std::get<1>(*i) == 1);
     REQUIRE(std::get<2>(*i) == 4);
   }
-  SECTION("Edge not found returns cend") {
-    REQUIRE(g.cend() == g.find(1, 2, 1));
-  }
+  SECTION("Edge not found returns cend") { REQUIRE(g.cend() == g.find(1, 2, 1)); }
 }
 
 TEST_CASE("Erase given src, dst, weight") {
@@ -331,7 +327,7 @@ TEST_CASE("Iterators") {
   // Also testing order upon inserting nodes and edges
   SECTION("cbegin") {
     auto it = g.cbegin();
-    const auto &[from, to, weight] = *it;
+    const auto& [from, to, weight] = *it;
     REQUIRE(from == 2);
     REQUIRE(to == 3);
     REQUIRE(weight == "Another Edge from 2 to 3");
@@ -354,7 +350,7 @@ TEST_CASE("Iterators") {
   SECTION("end") { REQUIRE(g.cend() == g.end()); }
   SECTION("crbegin") {
     auto it = g.crbegin();
-    const auto &[from, to, weight] = *it;
+    const auto& [from, to, weight] = *it;
     REQUIRE(from == 4);
     REQUIRE(to == 4);
     REQUIRE(weight == "Self Edge");
@@ -372,14 +368,14 @@ TEST_CASE("Iterators") {
   SECTION("find") {
     WHEN("self edge") {
       auto it = g.find(4, 4, "Self Edge");
-      const auto &[from, to, weight] = *it;
+      const auto& [from, to, weight] = *it;
       REQUIRE(from == 4);
       REQUIRE(to == 4);
       REQUIRE(weight == "Self Edge");
     }
     WHEN("double edge") {
       auto it = g.find(2, 3, "Edge from 2 to 3");
-      const auto &[from, to, weight] = *it;
+      const auto& [from, to, weight] = *it;
       REQUIRE(from == 2);
       REQUIRE(to == 3);
       REQUIRE(weight == "Edge from 2 to 3");
@@ -428,7 +424,7 @@ TEST_CASE("Iterators2") {
   SECTION("Move backward") {
     auto i = g.find(1, 1, 4);
     i--;
-    const auto &[from, to, weight] = *i;
+    const auto& [from, to, weight] = *i;
     REQUIRE(from == 1);
     REQUIRE(to == 1);
     REQUIRE(weight == 2);
