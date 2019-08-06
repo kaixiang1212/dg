@@ -229,6 +229,92 @@ TEST_CASE("GetWeights"){
   }
 }
 
+
+// TODO : Iterators
+TEST_CASE("Find iterator"){
+  gdwg::Graph<int, int> g{1};
+  g.InsertEdge(1,1,4);
+  SECTION("Return const iterator to edge"){
+    auto i = g.find(1,1,4);
+    REQUIRE( std::get<0>(*i) == 1);
+    REQUIRE( std::get<1>(*i) == 1);
+    REQUIRE( std::get<2>(*i) == 4);
+  }
+  SECTION("Edge not found returns cend"){
+    REQUIRE(g.cend() == g.find(1,2,1));
+  }
+}
+
+TEST_CASE("Erase given src, dst, weight"){
+  gdwg::Graph<int, int> g{1};
+  g.InsertEdge(1,1,4);
+  SECTION("Erase edge"){
+    REQUIRE(g.erase(1,1,4));
+    REQUIRE(g.GetConnected(1).empty());
+    REQUIRE(g.end() == g.find(1,1,4));
+  }
+  SECTION("Edge not found returns false"){
+    REQUIRE(!g.erase(1,2,1));
+  }
+}
+
+TEST_CASE("Erase edge given iterator"){
+  gdwg::Graph<int, int> g{1,2,3,4};
+  g.InsertEdge(1,1,4);
+  SECTION("Erase edge"){
+    auto i = g.find(1,1,4);
+    g.erase(i);
+    REQUIRE(g.GetConnected(1).empty());
+    REQUIRE(g.end() == g.find(1,1,4));
+  }
+  SECTION("Invalid iterator returns cend"){
+    REQUIRE(!g.erase(1,2,1));
+  }
+  SECTION("Erasing one element returns next") {
+    g.InsertEdge(1,1,2);
+    auto i = g.find(1,1,2);
+    REQUIRE(g.erase(i) == g.find(1,1,4));
+  }
+  SECTION("Erasing the only element returns cend?"){
+    // TODO:
+    auto i = g.find(1,1,4);
+    REQUIRE(g.begin() == g.end());
+    REQUIRE(g.end() == g.erase(i));
+  }
+  SECTION("Erasing all edge via loop"){
+    g.InsertEdge(1,2,2);
+    g.InsertEdge(2,1,5);
+    g.InsertEdge(3,2,2);
+    g.InsertEdge(2,4,2);
+    g.InsertEdge(3,4,2);
+    for(auto i = g.begin();i!= g.end();i++){
+      g.erase(i);
+    }
+  }
+}
+
+TEST_CASE("Iterators"){
+  gdwg::Graph<int, int> g{1};
+  g.InsertEdge(1,1,4);
+  g.InsertEdge(1,1,2);
+  SECTION("Move forward"){
+    auto i = g.find(1,1,2);
+    i++;
+    REQUIRE(i == g.find(1,1,4));
+  }
+  SECTION("++ on last element"){
+    auto i = g.find(1,1,4);
+    i++;
+    REQUIRE(g.end() == i);
+  }
+  SECTION("Move backward"){
+    // TODO:
+    auto i = g.find(1,1,4);
+    i--;
+    REQUIRE(i == g.find(1,1,2));
+  }
+}
+
 // Also testing weight as strings and node value as ints
 // And node not attached to others
 // 4 has edge to itself
@@ -331,4 +417,20 @@ TEST_CASE("Iterators") {
   }
 }
 
-// TODO : Operators == !=
+TEST_CASE("Operator == & !="){
+  gdwg::Graph<int, int> g{1};
+  g.InsertEdge(1,1,4);
+  g.InsertEdge(1,1,2);
+  gdwg::Graph<int, int> gCopy(g);
+  SECTION("Equal"){
+    REQUIRE(g == gCopy);
+  }
+  SECTION("Not equal after removing node"){
+    g.DeleteNode(1);
+    REQUIRE(g != gCopy);
+  }
+  SECTION("Not equal after inserting node"){
+    g.InsertNode(2);
+    REQUIRE(g != gCopy);
+  }
+}
