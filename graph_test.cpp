@@ -316,31 +316,6 @@ TEST_CASE("Erase edge given iterator") {
   }
 }
 
-TEST_CASE("Iterators2") {
-  gdwg::Graph<int, int> g{1};
-  g.InsertEdge(1, 1, 4);
-  g.InsertEdge(1, 1, 2);
-  SECTION("Move forward") {
-    auto i = g.find(1, 1, 2);
-    i++;
-    REQUIRE(i == g.find(1, 1, 4));
-  }
-  SECTION("++ on last element") {
-    auto i = g.find(1, 1, 4);
-    i++;
-    REQUIRE(g.end() == i);
-  }
-  SECTION("Move backward") {
-    auto i = g.find(1, 1, 4);
-    i--;
-    const auto & [ from, to, weight ] = *i;
-    REQUIRE(from == 1);
-    REQUIRE(to == 1);
-    REQUIRE(weight == 2);
-    // REQUIRE(i == g.find(1,1,2));
-  }
-}
-
 // Also testing weight as strings and node value as ints
 // And node not attached to others
 // 4 has edge to itself
@@ -431,6 +406,30 @@ TEST_CASE("Iterators") {
     g2.InsertEdge(2, 3, "Edge from 2 to 3");
     g2.InsertEdge(3, 2, "Backwards Edge now from 3 to 2");
     REQUIRE(g == g2);
+  }
+}
+
+TEST_CASE("Iterators2") {
+  gdwg::Graph<int, int> g{1};
+  g.InsertEdge(1, 1, 4);
+  g.InsertEdge(1, 1, 2);
+  SECTION("Move forward") {
+    auto i = g.find(1, 1, 2);
+    i++;
+    REQUIRE(i == g.find(1, 1, 4));
+  }
+  SECTION("++ on last element") {
+    auto i = g.find(1, 1, 4);
+    i++;
+    REQUIRE(g.end() == i);
+  }
+  SECTION("Move backward") {
+    auto i = g.find(1, 1, 4);
+    i--;
+    const auto & [ from, to, weight ] = *i;
+    REQUIRE(from == 1);
+    REQUIRE(to == 1);
+    REQUIRE(weight == 2);
   }
 }
 
