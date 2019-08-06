@@ -250,7 +250,7 @@ TEST_CASE("Erase given src, dst, weight"){
   SECTION("Erase edge"){
     REQUIRE(g.erase(1,1,4));
     REQUIRE(g.GetConnected(1).empty());
-    REQUIRE(g.cend() == g.find(1,1,4));
+    REQUIRE(g.end() == g.find(1,1,4));
   }
   SECTION("Edge not found returns false"){
     REQUIRE(!g.erase(1,2,1));
@@ -258,13 +258,13 @@ TEST_CASE("Erase given src, dst, weight"){
 }
 
 TEST_CASE("Erase edge given iterator"){
-  gdwg::Graph<int, int> g{1};
+  gdwg::Graph<int, int> g{1,2,3,4};
   g.InsertEdge(1,1,4);
   SECTION("Erase edge"){
     auto i = g.find(1,1,4);
     g.erase(i);
     REQUIRE(g.GetConnected(1).empty());
-    REQUIRE(g.cend() == g.find(1,1,4));
+    REQUIRE(g.end() == g.find(1,1,4));
   }
   SECTION("Invalid iterator returns cend"){
     REQUIRE(!g.erase(1,2,1));
@@ -279,6 +279,16 @@ TEST_CASE("Erase edge given iterator"){
     auto i = g.find(1,1,4);
     REQUIRE(g.begin() == g.end());
     REQUIRE(g.end() == g.erase(i));
+  }
+  SECTION("Erasing all edge via loop"){
+    g.InsertEdge(1,2,2);
+    g.InsertEdge(2,1,5);
+    g.InsertEdge(3,2,2);
+    g.InsertEdge(2,4,2);
+    g.InsertEdge(3,4,2);
+    for(auto i = g.begin();i!= g.end();i++){
+      g.erase(i);
+    }
   }
 }
 
@@ -304,7 +314,6 @@ TEST_CASE("Iterators"){
   }
 }
 
-// TODO : Operators == !=
 TEST_CASE("Operator == & !="){
   gdwg::Graph<int, int> g{1};
   g.InsertEdge(1,1,4);
