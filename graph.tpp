@@ -266,10 +266,21 @@ std::vector<E> gdwg::Graph<N,E>::GetWeights(const N& src, const N& dst){
   }
   return vec;
 }
-/*
 template<typename N, typename E>
-const_iterator gdwg::Graph<N,E>::find(const N&, const N&, const E&){}
+typename gdwg::Graph<N,E>::const_iterator gdwg::Graph<N,E>::find(const N& src, const N& dst, const E& weight){
+  auto nodeIt = nodes_.find(src);
+  auto nodeItEnd = nodes_.end();
+  std::vector<std::shared_ptr<Edge>>& edV = nodeIt->second->outGoing_;
+  for(auto it = edV.begin(); it != edV.end(); it++) {
+    Edge& ed = **it;
+    if(*ed.dst_ == dst && *ed.weight_ == weight) {
+      return const_iterator(nodeIt, nodeItEnd, it);
+    }
+  }
+  return cend();
+}
 
+/*
 template<typename N, typename E>
 bool gdwg::Graph<N,E>::erase(const N& src, const N& dst, const E& w){}
 

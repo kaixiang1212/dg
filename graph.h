@@ -46,8 +46,9 @@ class Graph {
     std::vector<N> GetNodes() const;
     std::vector<N> GetConnected(const N& src);
     std::vector<E> GetWeights(const N& src, const N& dst);
-    /*
+
     const_iterator find(const N&, const N&, const E&);
+    /*
     bool erase(const N& src, const N& dst, const E& w);
     const_iterator erase(const_iterator it);
     */

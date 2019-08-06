@@ -44,16 +44,23 @@ int main() {
   // https://en.cppreference.com/w/cpp/language/structured_binding
   // It allows you to unpack your tuple.
 
+  auto it = g.find("hello", "are", 2);
+  const auto& [from, to, weight] = *it;
+  std::cout << from << " -> " << to << " (weight " << weight << ")\n";
+  /*
   std::cout << g;
   for (const auto& [from, to, weight] : g) {
     std::cout << from << " -> " << to << " (weight " << weight << ")\n";
-  }
+  }*/
 
+
+
+  /*
   gdwg::Graph<std::string,int>::const_reverse_iterator it = g.rbegin();
   const auto& [from, to, weight] = *it;
   //it++;
   std::cout << from << " -> " << to << " (weight " << weight << ")\n";
-
+  */
 
   /*
   for (gdwg::Graph<std::string,int>::const_reverse_iterator it = g.rbegin(); it != g.rend(); it++) {
